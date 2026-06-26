@@ -35,7 +35,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         href: "/contratos/cadastrar",
         label: "Cadastrar Contrato",
-        description: "Novo contrato de licitação",
+        description: "Novo contrato",
         icon: PlusCircle,
       },
       {

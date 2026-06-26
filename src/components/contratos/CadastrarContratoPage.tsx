@@ -43,7 +43,7 @@ export function CadastrarContratoPage() {
     <div className="space-y-6">
       <PageHeader
         title="Cadastrar Contrato"
-        description="Registre um novo contrato de licitação antes de criar ordens de serviço."
+        description="Registre um novo contrato antes de criar ordens de serviço."
       />
       <SubNav />
 
