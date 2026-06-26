@@ -187,7 +187,7 @@ export function OsForm({
         .filter((i) => i.nome_item.trim())
         .map((i) => ({
           nome_item: i.nome_item.trim(),
-          quantidade: i.quantidade,
+          quantidade: Number(i.quantidade) || 1, // Força a conversão para número
           status_item: i.status_item,
         })),
     };
