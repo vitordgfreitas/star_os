@@ -3,26 +3,25 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle2 } from "lucide-react";
-import { OsForm } from "@/components/os/OsForm";
+import { ContratoForm } from "@/components/contratos/ContratoForm";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { SubNav } from "@/components/layout/SubNav";
-import { criarOrdemServico } from "@/lib/supabase/ordens-servico";
-import type { OrdemServicoInput } from "@/types";
+import { criarContrato } from "@/lib/supabase/contratos";
+import type { ContratoInput } from "@/types";
 
-export function CadastrarOsPage() {
+export function CadastrarContratoPage() {
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [formKey, setFormKey] = useState(0);
 
-  async function handleSubmit(data: OrdemServicoInput) {
+  async function handleSubmit(data: ContratoInput) {
     setLoading(true);
     try {
-      await criarOrdemServico(data);
+      await criarContrato(data);
       setSaved(true);
       setFormKey((k) => k + 1);
-      toast.success("Ordem de Serviço cadastrada com sucesso!", {
-        description: `${data.orgao_publico} — ${data.cidade}/${data.estado}`,
-        duration: 5000,
+      toast.success("Contrato cadastrado com sucesso!", {
+        description: `${data.numero_controle} — ${data.orgao}`,
       });
     } catch (err) {
       toast.error("Erro ao salvar", {
@@ -43,8 +42,8 @@ export function CadastrarOsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Cadastrar Ordem de Serviço"
-        description="Preencha os dados abaixo para registrar uma nova ordem de serviço vinculada a um contrato."
+        title="Cadastrar Contrato"
+        description="Registre um novo contrato de licitação antes de criar ordens de serviço."
       />
       <SubNav />
 
@@ -53,19 +52,12 @@ export function CadastrarOsPage() {
           <CheckCircle2 className="h-9 w-9 text-emerald-400 flex-shrink-0" />
           <div>
             <p className="text-lg font-bold text-emerald-300">Salvo com sucesso!</p>
-            <p className="text-emerald-400/80">
-              A ordem de serviço foi registrada. Você pode cadastrar outra abaixo.
-            </p>
+            <p className="text-emerald-400/80">Você pode cadastrar outro contrato abaixo.</p>
           </div>
         </div>
       )}
 
-      <OsForm
-        key={formKey}
-        onSubmit={handleSubmit}
-        loading={loading}
-        submitLabel="Salvar Ordem de Serviço"
-      />
+      <ContratoForm key={formKey} onSubmit={handleSubmit} loading={loading} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { OrdemServico, OrdemServicoInput, StatusItem, StatusOS } from "@/types";
-import { toDateInputValue } from "@/lib/utils";
+import type { Contrato, OrdemServico, OrdemServicoInput, StatusItem, StatusOS } from "@/types";
+import { listarContratos } from "@/lib/supabase/contratos";
+import { formatDate, toDateInputValue } from "@/lib/utils";
 
 const ESTADOS_BR = [
   "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
@@ -76,6 +77,9 @@ export function OsForm({
   );
   const [cidade, setCidade] = useState(initialData?.cidade ?? "");
   const [estado, setEstado] = useState(initialData?.estado ?? "");
+  const [contratoId, setContratoId] = useState(initialData?.contrato_id ?? "");
+  const [contratos, setContratos] = useState<Contrato[]>([]);
+  const [carregandoContratos, setCarregandoContratos] = useState(true);
   const [orgaoPublico, setOrgaoPublico] = useState(initialData?.orgao_publico ?? "");
   const [nomeContrato, setNomeContrato] = useState(initialData?.nome_contrato ?? "");
   const [empresaContratada, setEmpresaContratada] = useState(initialData?.empresa_contratada ?? "");
@@ -97,6 +101,22 @@ export function OsForm({
   );
   const [itens, setItens] = useState<ItemRow[]>(() => itensFromOrdem(initialData));
   const [errors, setErrors] = useState<string[]>([]);
+
+  useEffect(() => {
+    listarContratos()
+      .then(setContratos)
+      .catch(() => setContratos([]))
+      .finally(() => setCarregandoContratos(false));
+  }, []);
+
+  function handleContratoChange(id: string) {
+    setContratoId(id);
+    const contrato = contratos.find((c) => c.id === id);
+    if (contrato) {
+      setOrgaoPublico(contrato.orgao);
+      setNomeContrato(contrato.numero_controle);
+    }
+  }
 
   function addItem() {
     setItens((prev) => [...prev, createEmptyItem()]);
@@ -121,10 +141,10 @@ export function OsForm({
 
   function validate(): boolean {
     const newErrors: string[] = [];
+    if (!contratoId) newErrors.push("Selecione o contrato vinculado.");
     if (!cidade.trim()) newErrors.push("Informe a cidade.");
     if (!estado) newErrors.push("Selecione o estado.");
     if (!orgaoPublico.trim()) newErrors.push("Informe o órgão público.");
-    if (!nomeContrato.trim()) newErrors.push("Informe o nome do contrato.");
     if (!empresaContratada.trim()) newErrors.push("Informe a empresa contratada.");
     if (!endereco.trim()) newErrors.push("Informe o endereço.");
     if (!valorTotal || parseFloat(valorTotal) < 0) newErrors.push("Informe o valor total.");
@@ -146,6 +166,7 @@ export function OsForm({
     if (!validate()) return;
 
     const payload: OrdemServicoInput = {
+      contrato_id: contratoId,
       data_cadastro: toDateInputValue(dataCadastro!),
       cidade: cidade.trim(),
       estado,
@@ -211,22 +232,46 @@ export function OsForm({
               </SelectContent>
             </Select>
           </div>
+          <div className="md:col-span-2">
+            <Label htmlFor="contrato">Contrato Vinculado</Label>
+            <Select
+              value={contratoId}
+              onValueChange={handleContratoChange}
+              disabled={carregandoContratos}
+            >
+              <SelectTrigger id="contrato" className="min-h-12 text-base">
+                <SelectValue
+                  placeholder={
+                    carregandoContratos
+                      ? "Carregando contratos..."
+                      : contratos.length === 0
+                        ? "Nenhum contrato cadastrado"
+                        : "Selecione o contrato"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {contratos.map((c) => (
+                  <SelectItem key={c.id} value={c.id} className="text-base py-3">
+                    {c.numero_controle} — {c.orgao} ({formatDate(c.data_inicio)} a{" "}
+                    {formatDate(c.data_fim)})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {contratos.length === 0 && !carregandoContratos && (
+              <p className="text-sm text-amber-400 mt-2">
+                Cadastre um contrato antes de criar uma OS.
+              </p>
+            )}
+          </div>
           <div>
             <Label htmlFor="orgao">Órgão Público</Label>
             <Input
               id="orgao"
               value={orgaoPublico}
               onChange={(e) => setOrgaoPublico(e.target.value)}
-              placeholder="Ex: Prefeitura de Juiz de Fora"
-            />
-          </div>
-          <div>
-            <Label htmlFor="nome_contrato">Nome do Contrato</Label>
-            <Input
-              id="nome_contrato"
-              value={nomeContrato}
-              onChange={(e) => setNomeContrato(e.target.value)}
-              placeholder="Ex: Festa Junina 2026 — Centro"
+              placeholder="Preenchido pelo contrato"
             />
           </div>
           <div>

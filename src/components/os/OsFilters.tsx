@@ -67,7 +67,7 @@ export function OsFilters({ filtros, onChange, totalFiltrado, totalGeral }: OsFi
           <Input
             value={filtros.busca}
             onChange={(e) => update({ busca: e.target.value })}
-            placeholder="Buscar por contrato, órgão ou item..."
+            placeholder="Buscar por órgão, nº do contrato ou item..."
             className="pl-10"
           />
         </div>

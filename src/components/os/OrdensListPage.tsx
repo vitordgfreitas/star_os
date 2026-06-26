@@ -14,6 +14,7 @@ import { OsForm } from "@/components/os/OsForm";
 import { OsFilters } from "@/components/os/OsFilters";
 import { OsCard } from "@/components/os/OsCard";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { SubNav } from "@/components/layout/SubNav";
 import {
   listarOrdensServico,
   atualizarOrdemServico,
@@ -159,8 +160,9 @@ export function OrdensListPage() {
     <div className="space-y-6">
       <PageHeader
         title="Ordens de Serviço"
-        description="Gerencie contratos, itens e status logístico."
+        description="Gerencie ordens, itens e status logístico."
       />
+      <SubNav />
 
       <OsFilters
         filtros={filtros}

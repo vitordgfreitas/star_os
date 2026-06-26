@@ -24,6 +24,25 @@ export interface FiltrosOS {
   dataFim?: string;
 }
 
+export interface Contrato {
+  id: string;
+  orgao: string;
+  data_inicio: string;
+  data_fim: string;
+  numero_controle: string;
+  link_pdf_drive: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ContratoInput {
+  orgao: string;
+  data_inicio: string;
+  data_fim: string;
+  numero_controle: string;
+  link_pdf_drive?: string | null;
+}
+
 export interface ItemOS {
   id?: string;
   os_id?: string;
@@ -34,6 +53,7 @@ export interface ItemOS {
 
 export interface OrdemServico {
   id: string;
+  contrato_id: string;
   data_cadastro: string;
   cidade: string;
   estado: string;
@@ -51,9 +71,11 @@ export interface OrdemServico {
   created_at?: string;
   updated_at?: string;
   itens_os?: ItemOS[];
+  contratos?: Contrato | null;
 }
 
 export interface OrdemServicoInput {
+  contrato_id: string;
   data_cadastro: string;
   cidade: string;
   estado: string;

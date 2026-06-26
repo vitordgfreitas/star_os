@@ -1,11 +1,11 @@
 import { supabase } from "./client";
 import type { OrdemServico, OrdemServicoInput, ItemOS, StatusItem } from "@/types";
 
-/** Busca todas as ordens de serviço com seus itens */
+/** Busca todas as ordens de serviço com seus itens e contrato */
 export async function listarOrdensServico(): Promise<OrdemServico[]> {
   const { data, error } = await supabase
     .from("ordens_servico")
-    .select("*, itens_os(*)");
+    .select("*, itens_os(*), contratos(*)");
 
   if (error) throw new Error(error.message);
   return (data ?? []) as OrdemServico[];
@@ -15,7 +15,7 @@ export async function listarOrdensServico(): Promise<OrdemServico[]> {
 export async function buscarOrdemServico(id: string): Promise<OrdemServico | null> {
   const { data, error } = await supabase
     .from("ordens_servico")
-    .select("*, itens_os(*)")
+    .select("*, itens_os(*), contratos(*)")
     .eq("id", id)
     .single();
 
@@ -142,7 +142,7 @@ export async function listarOrdensPorPeriodo(
 ): Promise<OrdemServico[]> {
   const { data, error } = await supabase
     .from("ordens_servico")
-    .select("*, itens_os(*)")
+    .select("*, itens_os(*), contratos(*)")
     .lte("data_inicio_evento", fim)
     .gte("data_fim_evento", inicio)
     .order("data_inicio_evento", { ascending: true });

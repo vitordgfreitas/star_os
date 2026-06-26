@@ -63,7 +63,7 @@ export function OsCard({
           <div className="flex-1 min-w-0 space-y-2">
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <h2 className="text-lg sm:text-xl font-bold text-slate-100 truncate">
-                {os.nome_contrato}
+                {os.contratos?.numero_controle || os.nome_contrato}
               </h2>
               <StatusBadge status={os.status} />
             </div>

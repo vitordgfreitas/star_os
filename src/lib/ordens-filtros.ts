@@ -21,10 +21,12 @@ function correspondeBusca(os: OrdemServico, termo: string): boolean {
 
   const q = normalizar(termo.trim());
   const campos = [
-    os.nome_contrato,
     os.orgao_publico,
+    os.nome_contrato,
+    os.contratos?.numero_controle,
+    os.contratos?.orgao,
     ...(os.itens_os?.map((i) => i.nome_item) ?? []),
-  ];
+  ].filter(Boolean) as string[];
 
   return campos.some((c) => normalizar(c).includes(q));
 }
@@ -59,8 +61,12 @@ export function filtrarEOrdenarOrdens(
 
   return [...resultado].sort((a, b) => {
     if (ordenacao === "alfabetica") {
-      const nomeA = normalizar(a.nome_contrato || a.orgao_publico || "");
-      const nomeB = normalizar(b.nome_contrato || b.orgao_publico || "");
+      const nomeA = normalizar(
+        a.contratos?.numero_controle || a.nome_contrato || a.orgao_publico || ""
+      );
+      const nomeB = normalizar(
+        b.contratos?.numero_controle || b.nome_contrato || b.orgao_publico || ""
+      );
       const cmp = nomeA.localeCompare(nomeB, "pt-BR", { sensitivity: "base" });
       if (cmp !== 0) return cmp;
       return dataInicioMs(a.data_inicio_evento) - dataInicioMs(b.data_inicio_evento);

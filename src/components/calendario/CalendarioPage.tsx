@@ -10,19 +10,12 @@ import {
 import { format, parse, startOfWeek, getDay, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { StatusBadge } from "@/components/ui/badge";
 import { CalendarToolbar } from "@/components/calendario/CalendarToolbar";
-import { ItensOsList } from "@/components/os/ItensOsList";
+import { OsDetalheDialog } from "@/components/os/OsDetalheDialog";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { SubNav } from "@/components/layout/SubNav";
 import { listarOrdensServico } from "@/lib/supabase/ordens-servico";
 import type { CalendarEvent, OrdemServico, StatusItem } from "@/types";
-import { formatDate } from "@/lib/utils";
 
 const locales = { "pt-BR": ptBR };
 
@@ -51,7 +44,7 @@ const messages = {
 function EventComponent({ event }: EventProps<CalendarEvent>) {
   return (
     <div className="text-[10px] sm:text-xs font-medium leading-tight px-0.5 sm:px-1">
-      <div className="truncate">{event.resource.nome_contrato || event.resource.orgao_publico}</div>
+      <div className="truncate">{event.resource.contratos?.numero_controle || event.resource.nome_contrato || event.resource.orgao_publico}</div>
       <div className="text-[9px] sm:text-xs opacity-80 truncate hidden sm:block">
         {event.resource.cidade}
       </div>
@@ -64,7 +57,7 @@ function osToCalendarEvent(os: OrdemServico): CalendarEvent {
   const end = addDays(new Date(os.data_fim_evento + "T00:00:00"), 1);
   return {
     id: os.id,
-    title: `${os.nome_contrato || os.orgao_publico} — ${os.cidade}`,
+    title: `${os.contratos?.numero_controle || os.nome_contrato} — ${os.cidade}`,
     start,
     end,
     resource: os,
@@ -137,6 +130,7 @@ export function CalendarioPage() {
           title="Calendário de Eventos"
           description="Toque em um evento para ver itens e atualizar status logístico."
         />
+        <SubNav />
       </div>
 
       <div className="flex-1 min-h-[280px] rounded-xl sm:rounded-2xl border border-[#2a2d3e] bg-[#13151f] p-2 sm:p-3 lg:p-5 shadow-sm shadow-black/20 calendar-wrapper mx-1 sm:mx-2 lg:mx-4 mb-1">
@@ -171,57 +165,11 @@ export function CalendarioPage() {
         />
       </div>
 
-      <Dialog open={!!selectedOs} onOpenChange={(open) => !open && setSelectedOs(null)}>
-        <DialogContent className="max-w-2xl">
-          {selectedOs && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="text-xl sm:text-2xl">
-                  {selectedOs.nome_contrato}
-                </DialogTitle>
-              </DialogHeader>
-
-              <div className="space-y-5">
-                <div className="flex flex-wrap items-center gap-3">
-                  <StatusBadge status={selectedOs.status} />
-                  <span className="text-base text-slate-400">{selectedOs.orgao_publico}</span>
-                  <span className="text-base text-slate-400">
-                    {selectedOs.cidade}/{selectedOs.estado}
-                  </span>
-                </div>
-
-                <p className="text-sm font-semibold text-indigo-400 uppercase tracking-wide">
-                  {selectedOs.empresa_contratada}
-                </p>
-
-                <div className="grid gap-3 text-sm sm:text-base text-slate-300 bg-[#0f1117] rounded-xl p-4 border border-[#2a2d3e]">
-                  <p>
-                    <span className="font-semibold text-slate-100">Endereço:</span>{" "}
-                    {selectedOs.endereco}
-                  </p>
-                  <p>
-                    <span className="font-semibold text-slate-100">Período:</span>{" "}
-                    {formatDate(selectedOs.data_inicio_evento)} até{" "}
-                    {formatDate(selectedOs.data_fim_evento)}
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-bold text-slate-100 mb-3 flex items-center gap-2">
-                    <span className="inline-block w-1 h-5 bg-indigo-500 rounded-full" />
-                    Itens — Status Logístico
-                  </h3>
-                  <ItensOsList
-                    itens={selectedOs.itens_os ?? []}
-                    onStatusChange={handleItemStatusChange}
-                    compact
-                  />
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+      <OsDetalheDialog
+        os={selectedOs}
+        onClose={() => setSelectedOs(null)}
+        onItemStatusChange={handleItemStatusChange}
+      />
     </div>
   );
 }

@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { OS_AUTH_COOKIE } from "@/lib/auth/constants";
-
-const PROTECTED_PREFIXES = ["/cadastrar", "/ordens"];
+import { PROTECTED_PATH_PREFIXES } from "@/lib/nav-config";
 
 async function hashPasswordEdge(password: string): Promise<string> {
   const data = new TextEncoder().encode(`star-os:${password}`);
@@ -22,7 +21,7 @@ async function verifyTokenEdge(token: string): Promise<boolean> {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isProtected = PROTECTED_PREFIXES.some(
+  const isProtected = PROTECTED_PATH_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
   );
 
@@ -44,5 +43,12 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/cadastrar", "/cadastrar/:path*", "/ordens", "/ordens/:path*"],
+  matcher: [
+    "/contratos",
+    "/contratos/:path*",
+    "/ordens",
+    "/ordens/:path*",
+    "/cadastrar",
+    "/cadastrar/:path*",
+  ],
 };

@@ -3,13 +3,12 @@
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const PROTECTED = ["/cadastrar", "/ordens"];
+import { isProtectedPath } from "@/lib/nav-config";
 
 export function MobileHeader() {
   const pathname = usePathname();
   const router = useRouter();
-  const showLogout = PROTECTED.includes(pathname);
+  const showLogout = isProtectedPath(pathname);
 
   async function handleLogout() {
     await fetch("/api/auth/os", { method: "DELETE" });
@@ -30,7 +29,7 @@ export function MobileHeader() {
           variant="ghost"
           size="sm"
           onClick={handleLogout}
-          className="text-slate-400 hover:text-white gap-1.5 px-3"
+          className="text-slate-400 hover:text-white gap-1.5 px-3 min-h-11"
           aria-label="Sair"
         >
           <LogOut className="w-4 h-4" />
