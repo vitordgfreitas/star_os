@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS public.ordens_servico (
   cidade              TEXT NOT NULL,
   estado              CHAR(2) NOT NULL,
   orgao_publico       TEXT NOT NULL,
+  empresa_contratada  TEXT NOT NULL,
   endereco            TEXT NOT NULL,
   valor_total         NUMERIC(12, 2) NOT NULL DEFAULT 0 CHECK (valor_total >= 0),
   data_inicio_evento  DATE NOT NULL,
@@ -43,6 +44,7 @@ CREATE INDEX IF NOT EXISTS idx_ordens_servico_status ON public.ordens_servico (s
 CREATE INDEX IF NOT EXISTS idx_ordens_servico_data_inicio ON public.ordens_servico (data_inicio_evento);
 CREATE INDEX IF NOT EXISTS idx_ordens_servico_data_fim ON public.ordens_servico (data_fim_evento);
 CREATE INDEX IF NOT EXISTS idx_ordens_servico_orgao ON public.ordens_servico (orgao_publico);
+CREATE INDEX IF NOT EXISTS idx_ordens_servico_empresa ON public.ordens_servico (empresa_contratada);
 
 -- ============================================================
 -- Tabela: itens_os (1:N com ordens_servico)

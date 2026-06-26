@@ -159,6 +159,10 @@ export function CalendarioPage() {
                   </span>
                 </div>
 
+                <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide">
+                  {selectedOs.empresa_contratada}
+                </p>
+
                 <div className="grid gap-3 text-base text-slate-700 bg-slate-50 rounded-xl p-4 border border-slate-100">
                   <p>
                     <span className="font-semibold text-slate-900">Endereço:</span> {selectedOs.endereco}

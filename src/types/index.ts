@@ -13,6 +13,7 @@ export interface OrdemServico {
   cidade: string;
   estado: string;
   orgao_publico: string;
+  empresa_contratada: string;
   endereco: string;
   valor_total: number;
   data_inicio_evento: string;
@@ -31,6 +32,7 @@ export interface OrdemServicoInput {
   cidade: string;
   estado: string;
   orgao_publico: string;
+  empresa_contratada: string;
   endereco: string;
   valor_total: number;
   data_inicio_evento: string;

@@ -162,6 +162,9 @@ export function OrdensListPage() {
                       </h2>
                       <StatusBadge status={os.status} />
                     </div>
+                    <p className="text-sm font-medium text-slate-500">
+                      {os.empresa_contratada}
+                    </p>
                     <p className="text-base text-slate-600">
                       {os.cidade}/{os.estado} — {os.endereco}
                     </p>

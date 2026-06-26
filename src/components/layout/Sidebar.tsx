@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Calendar, ClipboardList, Lock, LogOut, PlusCircle, Star } from "lucide-react";
+import { Calendar, ClipboardList, Lock, LogOut, PlusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -43,16 +43,11 @@ export function Sidebar() {
 
   return (
     <aside className="w-full lg:w-64 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white flex-shrink-0 flex flex-col border-r border-slate-800/50">
-      <div className="p-6 border-b border-slate-800/60">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
-            <Star className="w-5 h-5 text-amber-300 fill-amber-300" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold leading-tight tracking-tight">Star OS</h1>
-            <p className="text-slate-400 text-xs mt-0.5">Gestão de Contratos</p>
-          </div>
-        </div>
+      <div className="px-6 py-7 border-b border-slate-800/60">
+        <h1 className="text-xl font-bold tracking-tight text-white">Star OS</h1>
+        <p className="text-slate-500 text-[11px] mt-1.5 font-medium uppercase tracking-[0.15em]">
+          Gestão de Contratos
+        </p>
       </div>
 
       <nav className="p-3 space-y-1 flex-1">

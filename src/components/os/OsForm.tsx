@@ -75,6 +75,7 @@ export function OsForm({
   const [cidade, setCidade] = useState(initialData?.cidade ?? "");
   const [estado, setEstado] = useState(initialData?.estado ?? "");
   const [orgaoPublico, setOrgaoPublico] = useState(initialData?.orgao_publico ?? "");
+  const [empresaContratada, setEmpresaContratada] = useState(initialData?.empresa_contratada ?? "");
   const [endereco, setEndereco] = useState(initialData?.endereco ?? "");
   const [valorTotal, setValorTotal] = useState(
     initialData ? String(initialData.valor_total) : ""
@@ -120,6 +121,7 @@ export function OsForm({
     if (!cidade.trim()) newErrors.push("Informe a cidade.");
     if (!estado) newErrors.push("Selecione o estado.");
     if (!orgaoPublico.trim()) newErrors.push("Informe o órgão público.");
+    if (!empresaContratada.trim()) newErrors.push("Informe a empresa contratada.");
     if (!endereco.trim()) newErrors.push("Informe o endereço.");
     if (!valorTotal || parseFloat(valorTotal) < 0) newErrors.push("Informe o valor total.");
     if (!dataCadastro) newErrors.push("Informe a data de cadastro.");
@@ -144,6 +146,7 @@ export function OsForm({
       cidade: cidade.trim(),
       estado,
       orgao_publico: orgaoPublico.trim(),
+      empresa_contratada: empresaContratada.trim(),
       endereco: endereco.trim(),
       valor_total: parseFloat(valorTotal),
       data_inicio_evento: toDateInputValue(dataInicio!),
@@ -206,6 +209,15 @@ export function OsForm({
               value={orgaoPublico}
               onChange={(e) => setOrgaoPublico(e.target.value)}
               placeholder="Ex: Prefeitura de São Paulo"
+            />
+          </div>
+          <div>
+            <Label htmlFor="empresa">Empresa Contratada</Label>
+            <Input
+              id="empresa"
+              value={empresaContratada}
+              onChange={(e) => setEmpresaContratada(e.target.value)}
+              placeholder="Ex: Star Locações, Empresa XYZ..."
             />
           </div>
           <div>
