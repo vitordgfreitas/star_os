@@ -29,7 +29,7 @@ const STATUS_OPTIONS: StatusOS[] = ["Pendente", "Em Andamento", "Concluído"];
 interface ItemRow {
   key: string;
   nome_item: string;
-  quantidade: number;
+  quantidade: number| "";
   status_item: StatusItem;
 }
 
@@ -37,7 +37,7 @@ let itemKeyCounter = 0;
 
 function createEmptyItem(): ItemRow {
   itemKeyCounter += 1;
-  return { key: `item-${itemKeyCounter}`, nome_item: "", quantidade: 1, status_item: "Pendente" };
+  return { key: `item-${itemKeyCounter}`, nome_item: "", quantidade: "", status_item: "Pendente" };
 }
 
 function itensFromOrdem(os?: OrdemServico): ItemRow[] {
@@ -49,7 +49,7 @@ function itensFromOrdem(os?: OrdemServico): ItemRow[] {
       status_item: i.status_item ?? "Pendente",
     }));
   }
-  return [{ key: "item-initial", nome_item: "", quantidade: 1, status_item: "Pendente" }];
+  return [{ key: "item-initial", nome_item: "", quantidade: "", status_item: "Pendente" }];
 }
 
 function parseDate(value: string): Date | undefined {
@@ -131,8 +131,10 @@ export function OsForm({
       prev.map((item) =>
         item.key === key
           ? {
-              ...item,
-              [field]: field === "quantidade" ? Math.max(1, parseInt(value) || 1) : value,
+            ...item,
+            [field]: field === "quantidade" 
+              ? (value === "" ? "" : Math.max(1, parseInt(value) || 1)) // <-- Permite string vazia
+              : value,
             }
           : item
       )
