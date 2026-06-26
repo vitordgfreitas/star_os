@@ -1,0 +1,205 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+import {
+  Calendar as BigCalendar,
+  dateFnsLocalizer,
+  type EventProps,
+} from "react-big-calendar";
+import { format, parse, startOfWeek, getDay, addDays } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { StatusBadge } from "@/components/ui/badge";
+import { CalendarToolbar } from "@/components/calendario/CalendarToolbar";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { listarOrdensServico } from "@/lib/supabase/ordens-servico";
+import type { CalendarEvent, OrdemServico } from "@/types";
+import { formatDate } from "@/lib/utils";
+
+const locales = { "pt-BR": ptBR };
+
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek: () => startOfWeek(new Date(), { weekStartsOn: 0 }),
+  getDay,
+  locales,
+});
+
+const messages = {
+  today: "Hoje",
+  previous: "",
+  next: "",
+  month: "Mês",
+  week: "Semana",
+  day: "Dia",
+  agenda: "Agenda",
+  date: "Data",
+  time: "Hora",
+  event: "Evento",
+  noEventsInRange: "Nenhum evento neste período.",
+};
+
+function EventComponent({ event }: EventProps<CalendarEvent>) {
+  return (
+    <div className="text-sm font-medium leading-tight px-1">
+      <div className="truncate">{event.resource.orgao_publico}</div>
+      <div className="text-xs opacity-80 truncate">{event.resource.cidade}</div>
+    </div>
+  );
+}
+
+function osToCalendarEvent(os: OrdemServico): CalendarEvent {
+  const start = new Date(os.data_inicio_evento + "T00:00:00");
+  const end = addDays(new Date(os.data_fim_evento + "T00:00:00"), 1);
+  return {
+    id: os.id,
+    title: `${os.orgao_publico} — ${os.cidade}`,
+    start,
+    end,
+    resource: os,
+  };
+}
+
+export function CalendarioPage() {
+  const [ordens, setOrdens] = useState<OrdemServico[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedOs, setSelectedOs] = useState<OrdemServico | null>(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const carregar = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await listarOrdensServico();
+      setOrdens(data);
+    } catch (err) {
+      toast.error("Erro ao carregar calendário", {
+        description: err instanceof Error ? err.message : "Tente novamente.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    carregar();
+  }, [carregar]);
+
+  const events = useMemo(() => ordens.map(osToCalendarEvent), [ordens]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <p className="text-xl text-slate-600">Carregando calendário...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-[calc(100vh-3rem)] lg:h-[calc(100vh-5rem)] -m-2 lg:-m-4">
+      <div className="mb-4 px-2 lg:px-4 shrink-0">
+        <PageHeader
+          title="Calendário de Eventos"
+          description="Consulte os itens que precisam ser enviados para cada evento. Clique em um bloco para ver os detalhes."
+        />
+      </div>
+
+      <div className="flex-1 min-h-0 rounded-2xl border border-slate-200/80 bg-white/90 backdrop-blur-sm p-3 lg:p-5 shadow-sm calendar-wrapper mx-2 lg:mx-4 mb-2">
+        <BigCalendar
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: "100%" }}
+          culture="pt-BR"
+          messages={messages}
+          date={currentDate}
+          onNavigate={setCurrentDate}
+          views={["month"]}
+          defaultView="month"
+          toolbar
+          popup
+          selectable={false}
+          onSelectEvent={(event) => setSelectedOs(event.resource)}
+          components={{ toolbar: CalendarToolbar, event: EventComponent }}
+          eventPropGetter={() => ({
+            style: {
+              backgroundColor: "#334155",
+              borderColor: "#1e293b",
+              color: "white",
+              borderRadius: "6px",
+              border: "none",
+              padding: "3px 6px",
+              fontSize: "13px",
+            },
+          })}
+        />
+      </div>
+
+      <Dialog open={!!selectedOs} onOpenChange={(open) => !open && setSelectedOs(null)}>
+        <DialogContent className="max-w-2xl">
+          {selectedOs && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-2xl">{selectedOs.orgao_publico}</DialogTitle>
+              </DialogHeader>
+
+              <div className="space-y-6">
+                <div className="flex flex-wrap items-center gap-3">
+                  <StatusBadge status={selectedOs.status} />
+                  <span className="text-lg text-slate-700">
+                    {selectedOs.cidade}/{selectedOs.estado}
+                  </span>
+                </div>
+
+                <div className="grid gap-3 text-base text-slate-700 bg-slate-50 rounded-xl p-4 border border-slate-100">
+                  <p>
+                    <span className="font-semibold text-slate-900">Endereço:</span> {selectedOs.endereco}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-slate-900">Período:</span>{" "}
+                    {formatDate(selectedOs.data_inicio_evento)} até{" "}
+                    {formatDate(selectedOs.data_fim_evento)}
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                    <span className="inline-block w-1 h-5 bg-slate-800 rounded-full" />
+                    Itens para Enviar
+                  </h3>
+                  {selectedOs.itens_os && selectedOs.itens_os.length > 0 ? (
+                    <div className="space-y-3">
+                      {selectedOs.itens_os.map((item) => (
+                        <div
+                          key={item.id ?? item.nome_item}
+                          className="flex items-center justify-between p-4 rounded-xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
+                        >
+                          <span className="text-base font-semibold text-slate-900">
+                            {item.nome_item}
+                          </span>
+                          <span className="text-xl font-bold text-slate-800 bg-slate-100 px-4 py-1.5 rounded-lg min-w-[3.5rem] text-center">
+                            {item.quantidade}x
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-slate-600 text-lg">Nenhum item cadastrado.</p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
