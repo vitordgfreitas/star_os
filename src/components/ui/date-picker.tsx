@@ -99,7 +99,7 @@ export function DatePicker({
           disabled={disabled}
           className={cn(
             "w-full justify-start text-left font-normal h-12 text-base",
-            !value && "text-slate-400"
+            !value && "text-slate-500"
           )}
         >
           <CalendarIcon className="mr-3 h-5 w-5 shrink-0" />

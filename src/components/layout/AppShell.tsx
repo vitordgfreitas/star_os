@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import { Toaster } from "sonner";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { MobileHeader } from "@/components/layout/MobileHeader";
+import { MobileNav } from "@/components/layout/MobileNav";
 import { cn } from "@/lib/utils";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -11,32 +13,44 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isLogin = pathname === "/login";
 
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row bg-[#f4f6f9]">
-      {/* Fundo decorativo sutil */}
+    <div className="flex min-h-dvh flex-col lg:flex-row bg-[#0a0b10]">
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-slate-200/40 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-slate-300/30 blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-indigo-950/30 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-slate-900/50 blur-3xl" />
       </div>
 
-      <Sidebar />
-      <main
-        className={cn(
-          "flex-1 overflow-auto",
-          isCalendar ? "p-4 lg:p-6" : isLogin ? "p-6 lg:p-10" : "p-6 lg:p-10"
-        )}
-      >
-        <div className={cn("mx-auto", isCalendar || isLogin ? "max-w-none" : "max-w-6xl")}>
-          {children}
-        </div>
-      </main>
+      {/* Sidebar — só desktop */}
+      <div className="hidden lg:flex lg:flex-shrink-0">
+        <Sidebar />
+      </div>
+
+      <div className="flex flex-1 flex-col min-h-0 min-w-0">
+        <MobileHeader />
+
+        <main
+          className={cn(
+            "flex-1 overflow-auto min-h-0",
+            isLogin ? "p-4 sm:p-6 lg:p-10" : isCalendar ? "p-3 sm:p-4 lg:p-6" : "p-4 sm:p-6 lg:p-10",
+            !isLogin && "pb-24 lg:pb-0"
+          )}
+        >
+          <div className={cn("mx-auto w-full", isCalendar || isLogin ? "max-w-none" : "max-w-6xl")}>
+            {children}
+          </div>
+        </main>
+      </div>
+
+      <MobileNav />
+
       <Toaster
         position="top-center"
         closeButton
+        theme="dark"
         toastOptions={{
           classNames: {
-            toast: "text-base border border-slate-200/80 shadow-lg bg-white/95 backdrop-blur-sm",
-            title: "text-base font-semibold text-slate-900",
-            description: "text-sm text-slate-600",
+            toast: "text-base border border-[#2a2d3e] shadow-lg bg-[#1a1d2e] text-slate-100 max-w-[calc(100vw-2rem)]",
+            title: "text-base font-semibold text-slate-100",
+            description: "text-sm text-slate-400",
           },
         }}
       />

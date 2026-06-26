@@ -166,11 +166,11 @@ export function OsForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {errors.length > 0 && (
-        <div className="rounded-xl border-2 border-red-300 bg-red-50 p-4">
-          <p className="text-lg font-semibold text-red-800 mb-2">
+        <div className="rounded-xl border border-red-800/60 bg-red-950/40 p-4">
+          <p className="text-lg font-semibold text-red-300 mb-2">
             Por favor, corrija os seguintes campos:
           </p>
-          <ul className="list-disc list-inside text-red-700 space-y-1">
+          <ul className="list-disc list-inside text-red-400 space-y-1">
             {errors.map((err) => (
               <li key={err}>{err}</li>
             ))}
@@ -315,7 +315,7 @@ export function OsForm({
           {itens.map((item, index) => (
             <div
               key={item.key}
-              className="flex flex-col sm:flex-row gap-4 items-start sm:items-end p-4 rounded-xl bg-gray-50 border border-gray-200"
+              className="flex flex-col sm:flex-row gap-4 items-start sm:items-end p-4 rounded-xl bg-[#0f1117] border border-[#2a2d3e]"
             >
               <div className="flex-1 w-full">
                 <Label htmlFor={`item-nome-${item.key}`}>
@@ -364,7 +364,7 @@ export function OsForm({
             <CardTitle>Informações Financeiras</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-[#0f1117] border border-[#2a2d3e]">
               <Label htmlFor="nota" className="mb-0 text-xl">
                 Nota Emitida?
               </Label>
@@ -385,7 +385,7 @@ export function OsForm({
                 placeholder="Cole aqui o link do Drive..."
               />
             </div>
-            <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-[#0f1117] border border-[#2a2d3e]">
               <Label htmlFor="pagamento" className="mb-0 text-xl">
                 Pagamento Recebido?
               </Label>

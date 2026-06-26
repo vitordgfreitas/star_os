@@ -126,7 +126,7 @@ export function OrdensListPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-xl text-gray-600">Carregando ordens de serviço...</p>
+        <p className="text-xl text-slate-400">Carregando ordens de serviço...</p>
       </div>
     );
   }
@@ -141,10 +141,10 @@ export function OrdensListPage() {
       {ordens.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="py-16 text-center">
-            <p className="text-lg text-slate-600">
+            <p className="text-lg text-slate-400">
               Nenhuma ordem de serviço cadastrada ainda.
             </p>
-            <p className="text-slate-400 mt-2 text-sm">
+            <p className="text-slate-500 mt-2 text-sm">
               Use o menu &quot;Cadastrar OS&quot; para adicionar a primeira.
             </p>
           </CardContent>
@@ -152,23 +152,23 @@ export function OrdensListPage() {
       ) : (
         <div className="space-y-4">
           {ordens.map((os) => (
-            <Card key={os.id} className="overflow-hidden hover:shadow-md transition-shadow duration-200 border-slate-200/80">
+            <Card key={os.id} className="overflow-hidden hover:border-indigo-500/20 transition-colors duration-200">
               <CardContent className="p-6 space-y-4">
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                   <div className="space-y-2 flex-1">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h2 className="text-xl font-bold text-slate-900">
+                      <h2 className="text-xl font-bold text-slate-100">
                         {os.orgao_publico}
                       </h2>
                       <StatusBadge status={os.status} />
                     </div>
-                    <p className="text-sm font-medium text-slate-500">
+                    <p className="text-sm font-medium text-indigo-400">
                       {os.empresa_contratada}
                     </p>
-                    <p className="text-base text-slate-600">
+                    <p className="text-base text-slate-400">
                       {os.cidade}/{os.estado} — {os.endereco}
                     </p>
-                    <div className="flex flex-wrap gap-6 text-base text-gray-600">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-1 text-sm sm:text-base text-slate-500">
                       <span>
                         <strong>Evento:</strong> {formatDate(os.data_inicio_evento)} até{" "}
                         {formatDate(os.data_fim_evento)}
@@ -181,11 +181,12 @@ export function OrdensListPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full lg:w-auto">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => setEditOs(os)}
+                      className="w-full sm:w-auto min-h-11"
                     >
                       <Pencil className="h-5 w-5" />
                       Editar
@@ -194,6 +195,7 @@ export function OrdensListPage() {
                       variant="destructive"
                       size="sm"
                       onClick={() => setDeleteConfirm(os)}
+                      className="w-full sm:w-auto min-h-11"
                     >
                       <Trash2 className="h-5 w-5" />
                       Excluir
@@ -201,29 +203,29 @@ export function OrdensListPage() {
                   </div>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2 pt-4 border-t border-gray-200">
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50">
+                <div className="grid gap-4 md:grid-cols-2 pt-4 border-t border-[#2a2d3e]">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-[#0f1117] border border-[#2a2d3e]">
                     <div className="flex items-center gap-3">
                       {os.nota_emitida ? (
                         <CheckCircle2 className="h-5 w-5 text-emerald-600" />
                       ) : (
                         <XCircle className="h-5 w-5 text-slate-400" />
                       )}
-                      <Label className="mb-0 text-lg">Nota Emitida?</Label>
+                      <Label className="mb-0 text-base sm:text-lg">Nota Emitida?</Label>
                     </div>
                     <Switch
                       checked={os.nota_emitida}
                       onCheckedChange={(v) => handleToggleFinanceiro(os, "nota_emitida", v)}
                     />
                   </div>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-[#0f1117] border border-[#2a2d3e]">
                     <div className="flex items-center gap-3">
                       {os.pagamento_recebido ? (
                         <CheckCircle2 className="h-5 w-5 text-emerald-600" />
                       ) : (
                         <XCircle className="h-5 w-5 text-slate-400" />
                       )}
-                      <Label className="mb-0 text-lg">Pagamento Recebido?</Label>
+                      <Label className="mb-0 text-base sm:text-lg">Pagamento Recebido?</Label>
                     </div>
                     <Switch
                       checked={os.pagamento_recebido}
@@ -289,7 +291,7 @@ export function OrdensListPage() {
           <DialogHeader>
             <DialogTitle>Confirmar Exclusão</DialogTitle>
           </DialogHeader>
-          <p className="text-lg text-gray-700">
+          <p className="text-lg text-slate-300">
             Tem certeza que deseja excluir a ordem de serviço de{" "}
             <strong>{deleteConfirm?.orgao_publico}</strong>? Esta ação não pode ser desfeita.
           </p>

@@ -34,24 +34,24 @@ export function CalendarToolbar({ date, onNavigate }: ToolbarProps<CalendarEvent
   }
 
   return (
-    <div className="flex items-center justify-between gap-4 mb-4 px-1">
+    <div className="flex items-center justify-between gap-2 sm:gap-4 mb-3 sm:mb-4 px-0.5 sm:px-1">
       <Button
         type="button"
         variant="outline"
         size="icon"
         onClick={() => onNavigate("PREV")}
         aria-label="Mês anterior"
-        className="h-11 w-11 shrink-0"
+        className="h-10 w-10 sm:h-11 sm:w-11 shrink-0"
       >
         <ChevronLeft className="h-5 w-5" />
       </Button>
 
-      <div className="flex flex-1 items-center justify-center gap-3 flex-wrap">
+      <div className="flex flex-1 items-center justify-center gap-2 sm:gap-3 min-w-0">
         <Select
           value={String(currentMonth)}
           onValueChange={(v) => goToMonthYear(parseInt(v), currentYear)}
         >
-          <SelectTrigger className="w-44 h-11 text-base capitalize">
+          <SelectTrigger className="w-[7.5rem] sm:w-44 h-10 sm:h-11 text-sm sm:text-base capitalize">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -67,7 +67,7 @@ export function CalendarToolbar({ date, onNavigate }: ToolbarProps<CalendarEvent
           value={String(currentYear)}
           onValueChange={(v) => goToMonthYear(currentMonth, parseInt(v))}
         >
-          <SelectTrigger className="w-28 h-11 text-base">
+          <SelectTrigger className="w-20 sm:w-28 h-10 sm:h-11 text-sm sm:text-base">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -86,7 +86,7 @@ export function CalendarToolbar({ date, onNavigate }: ToolbarProps<CalendarEvent
         size="icon"
         onClick={() => onNavigate("NEXT")}
         aria-label="Próximo mês"
-        className="h-11 w-11 shrink-0"
+        className="h-10 w-10 sm:h-11 sm:w-11 shrink-0"
       >
         <ChevronRight className="h-5 w-5" />
       </Button>

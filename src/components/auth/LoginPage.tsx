@@ -49,19 +49,19 @@ export function LoginPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-900 text-white mb-4 shadow-lg">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 mb-4">
             <ShieldCheck className="w-8 h-8" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Área Restrita</h1>
-          <p className="text-slate-500 mt-2 text-base">
+          <h1 className="text-2xl font-bold text-slate-100 tracking-tight">Área Restrita</h1>
+          <p className="text-slate-400 mt-2 text-base">
             Digite a senha para acessar Cadastro e Ordens de Serviço.
           </p>
         </div>
 
-        <Card className="shadow-xl border-slate-200/80 backdrop-blur-sm">
+        <Card className="shadow-xl shadow-black/30">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Lock className="w-5 h-5 text-slate-600" />
+              <Lock className="w-5 h-5 text-slate-400" />
               Acesso Administrativo
             </CardTitle>
             <CardDescription>
@@ -84,7 +84,7 @@ export function LoginPage() {
               </div>
 
               {error && (
-                <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-red-700 text-sm font-medium">
+                <div className="rounded-lg bg-red-950/50 border border-red-800/60 px-4 py-3 text-red-300 text-sm font-medium">
                   {error}
                 </div>
               )}
@@ -96,9 +96,9 @@ export function LoginPage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-sm text-slate-400 mt-6">
+        <p className="text-center text-sm text-slate-500 mt-6">
           Precisa consultar itens?{" "}
-          <a href="/calendario" className="text-slate-600 font-medium hover:text-slate-900 underline-offset-2 hover:underline">
+          <a href="/calendario" className="text-indigo-400 font-medium hover:text-indigo-300 underline-offset-2 hover:underline">
             Ir para o Calendário
           </a>
         </p>

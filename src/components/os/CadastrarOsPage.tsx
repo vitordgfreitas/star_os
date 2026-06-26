@@ -47,11 +47,11 @@ export function CadastrarOsPage() {
       />
 
       {saved && (
-        <div className="flex items-center gap-4 rounded-xl border border-emerald-200 bg-emerald-50/80 p-5 shadow-sm">
-          <CheckCircle2 className="h-9 w-9 text-emerald-700 flex-shrink-0" />
+        <div className="flex items-center gap-4 rounded-xl border border-emerald-800/50 bg-emerald-950/40 p-5">
+          <CheckCircle2 className="h-9 w-9 text-emerald-400 flex-shrink-0" />
           <div>
-            <p className="text-lg font-bold text-emerald-900">Salvo com sucesso!</p>
-            <p className="text-emerald-800">
+            <p className="text-lg font-bold text-emerald-300">Salvo com sucesso!</p>
+            <p className="text-emerald-400/80">
               A ordem de serviço foi registrada. Você pode cadastrar outra abaixo.
             </p>
           </div>

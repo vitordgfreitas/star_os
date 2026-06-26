@@ -2,12 +2,13 @@
 @import "react-day-picker/style.css";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --primary: #334155;
-  --primary-hover: #1e293b;
-  --accent: #64748b;
-  --border: #e2e8f0;
+  --background: #0a0b10;
+  --foreground: #e2e8f0;
+  --surface: #13151f;
+  --surface-elevated: #1a1d2e;
+  --border: #2a2d3e;
+  --muted: #94a3b8;
+  --accent: #818cf8;
 }
 
 @theme inline {
@@ -22,7 +23,7 @@ body {
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
 }
 
-/* Calendário — layout limpo e sóbrio */
+/* Calendário — dark mode */
 .calendar-wrapper .rbc-toolbar {
   display: none;
 }
@@ -34,47 +35,59 @@ body {
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.025em;
+  background: #13151f;
+  border-color: #2a2d3e !important;
 }
 
 .calendar-wrapper .rbc-month-view {
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #2a2d3e;
   flex: 1;
+  background: #13151f;
 }
 
 .calendar-wrapper .rbc-month-row {
   min-height: 0;
   flex: 1;
+  border-color: #2a2d3e !important;
 }
 
 .calendar-wrapper .rbc-row-content {
   min-height: 80px;
 }
 
+.calendar-wrapper .rbc-day-bg {
+  background: #13151f;
+}
+
 .calendar-wrapper .rbc-day-bg + .rbc-day-bg,
 .calendar-wrapper .rbc-month-row + .rbc-month-row {
-  border-color: #e2e8f0;
+  border-color: #2a2d3e;
 }
 
 .calendar-wrapper .rbc-off-range-bg {
-  background: #f8fafc;
+  background: #0f1117;
 }
 
 .calendar-wrapper .rbc-today {
-  background: #f1f5f9;
+  background: #1e2135;
 }
 
 .calendar-wrapper .rbc-date-cell {
   padding: 6px 8px;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #475569;
+  color: #94a3b8;
 }
 
 .calendar-wrapper .rbc-date-cell.rbc-now {
   font-weight: 700;
-  color: #0f172a;
+  color: #e2e8f0;
+}
+
+.calendar-wrapper .rbc-date-cell > a {
+  color: inherit;
 }
 
 .calendar-wrapper .rbc-event {
@@ -84,13 +97,19 @@ body {
 .calendar-wrapper .rbc-show-more {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #475569;
+  color: #818cf8;
 }
 
 .calendar-wrapper .rbc-overlay {
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #2a2d3e;
+  background: #1a1d2e;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  color: #e2e8f0;
+}
+
+.calendar-wrapper .rbc-overlay-header {
+  border-color: #2a2d3e;
 }
 
 .calendar-wrapper .rbc-calendar {
@@ -109,10 +128,12 @@ body {
   flex: 1;
 }
 
-/* DatePicker — estilo sóbrio + intervalo destacado */
+/* DatePicker — dark mode */
 .rdp-custom {
-  --rdp-accent-color: #334155;
-  --rdp-accent-background-color: #f1f5f9;
+  --rdp-accent-color: #818cf8;
+  --rdp-accent-background-color: #1e2135;
+  background: #1a1d2e;
+  border-radius: 0.75rem;
 }
 
 .rdp-custom .rdp-day_button {
@@ -120,24 +141,25 @@ body {
   width: 2.25rem;
   border-radius: 0.375rem;
   font-size: 0.875rem;
+  color: #e2e8f0;
 }
 
 .rdp-custom .rdp-day_button:hover {
-  background: #f1f5f9;
+  background: #2a2d3e;
 }
 
 .rdp-custom .rdp-selected .rdp-day_button {
-  background: #334155;
+  background: #6366f1;
   color: white;
 }
 
 .rdp-custom .rdp-selected .rdp-day_button:hover {
-  background: #1e293b;
+  background: #4f46e5;
   color: white;
 }
 
 .rdp-custom .rdp-chevron {
-  fill: #64748b;
+  fill: #94a3b8;
 }
 
 .rdp-custom .rdp-button_previous,
@@ -149,7 +171,7 @@ body {
 .rdp-custom .rdp-caption_label {
   font-size: 1rem;
   font-weight: 600;
-  color: #0f172a;
+  color: #e2e8f0;
   text-transform: capitalize;
 }
 
@@ -160,21 +182,20 @@ body {
   text-transform: capitalize;
 }
 
-/* Dias no meio do intervalo (início → fim) */
 .rdp-custom .rdp-range_middle .rdp-day_button {
-  background: #e2e8f0;
-  color: #334155;
+  background: #2a2d3e;
+  color: #c7d2fe;
   border-radius: 0;
 }
 
 .rdp-custom .rdp-range_start .rdp-day_button {
-  background: #334155;
+  background: #6366f1;
   color: white;
   border-radius: 0.375rem 0 0 0.375rem;
 }
 
 .rdp-custom .rdp-range_end .rdp-day_button {
-  background: #334155;
+  background: #6366f1;
   color: white;
   border-radius: 0 0.375rem 0.375rem 0;
 }
@@ -184,6 +205,40 @@ body {
 }
 
 .rdp-custom .rdp-disabled .rdp-day_button {
-  opacity: 0.35;
+  opacity: 0.25;
   cursor: not-allowed;
+}
+
+.rdp-custom .rdp-outside .rdp-day_button {
+  color: #475569;
+}
+
+/* Mobile — calendário e áreas seguras */
+@media (max-width: 640px) {
+  .calendar-wrapper .rbc-header {
+    font-size: 0.65rem;
+    padding: 6px 2px;
+  }
+
+  .calendar-wrapper .rbc-date-cell {
+    padding: 4px 2px;
+    font-size: 0.75rem;
+  }
+
+  .calendar-wrapper .rbc-row-content {
+    min-height: 52px;
+  }
+
+  .calendar-wrapper .rbc-event {
+    font-size: 10px !important;
+    padding: 1px 2px !important;
+  }
+
+  .calendar-wrapper .rbc-show-more {
+    font-size: 0.7rem;
+  }
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }

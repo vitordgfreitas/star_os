@@ -169,11 +169,27 @@ O Railway usa por padrão:
 | **Start Command** | `npm start` |
 | **Port** | `$PORT` (automático) |
 
-### 6.4 Gerar domínio público
+### 6.4 Gerar domínio público (Public Networking)
 
 1. No painel do serviço, vá em **Settings** → **Networking**.
-2. Clique em **Generate Domain**.
-3. Anote a URL (ex: `star-os-production.up.railway.app`).
+2. Em **Public Networking**, clique em **Generate Domain**.
+3. Quando pedir **Target port**, use o valor da variável **`PORT`** do Railway.
+
+| Campo | Valor |
+|---|---|
+| **Target port** | Valor de `PORT` (geralmente **8080** ou **3000**) |
+
+**Como descobrir a porta correta:**
+
+1. Vá em **Variables** e veja se existe `PORT` (o Railway injeta automaticamente).
+2. Ou abra **Deployments** → último deploy → **View Logs** e procure algo como:
+   `Ready on http://0.0.0.0:8080` ou `- Local: http://localhost:3000`
+
+**Regra prática:** se o Railway sugerir **8080**, use **8080**. Se o log mostrar **3000**, use **3000**. A porta do domínio **tem que ser igual** à porta em que o app está escutando.
+
+> O projeto já está configurado com `next start -H 0.0.0.0 -p ${PORT:-3000}` — ou seja, usa a variável `PORT` do Railway automaticamente.
+
+4. Clique em **Generate Domain** e anote a URL (ex: `star-os-production.up.railway.app`).
 
 ### 6.5 Ordem recomendada de configuração
 

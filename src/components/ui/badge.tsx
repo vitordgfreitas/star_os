@@ -2,9 +2,9 @@ import { cn } from "@/lib/utils";
 import type { StatusOS } from "@/types";
 
 const statusStyles: Record<StatusOS, string> = {
-  Pendente: "bg-amber-50 text-amber-800 border-amber-200",
-  "Em Andamento": "bg-slate-100 text-slate-700 border-slate-300",
-  Concluído: "bg-emerald-50 text-emerald-800 border-emerald-200",
+  Pendente: "bg-amber-950/60 text-amber-300 border-amber-800/60",
+  "Em Andamento": "bg-indigo-950/60 text-indigo-300 border-indigo-800/60",
+  Concluído: "bg-emerald-950/60 text-emerald-300 border-emerald-800/60",
 };
 
 interface BadgeProps {

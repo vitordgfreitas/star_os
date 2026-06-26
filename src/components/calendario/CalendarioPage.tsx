@@ -49,9 +49,9 @@ const messages = {
 
 function EventComponent({ event }: EventProps<CalendarEvent>) {
   return (
-    <div className="text-sm font-medium leading-tight px-1">
+    <div className="text-[10px] sm:text-xs font-medium leading-tight px-0.5 sm:px-1">
       <div className="truncate">{event.resource.orgao_publico}</div>
-      <div className="text-xs opacity-80 truncate">{event.resource.cidade}</div>
+      <div className="text-[9px] sm:text-xs opacity-80 truncate hidden sm:block">{event.resource.cidade}</div>
     </div>
   );
 }
@@ -97,21 +97,21 @@ export function CalendarioPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-xl text-slate-600">Carregando calendário...</p>
+        <p className="text-xl text-slate-400">Carregando calendário...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-3rem)] lg:h-[calc(100vh-5rem)] -m-2 lg:-m-4">
-      <div className="mb-4 px-2 lg:px-4 shrink-0">
+    <div className="flex flex-col h-[calc(100dvh-7.5rem)] lg:h-[calc(100dvh-3rem)] -mx-1 sm:-m-2 lg:-m-4">
+      <div className="mb-3 sm:mb-4 px-1 sm:px-2 lg:px-4 shrink-0">
         <PageHeader
           title="Calendário de Eventos"
-          description="Consulte os itens que precisam ser enviados para cada evento. Clique em um bloco para ver os detalhes."
+          description="Toque em um evento para ver os itens a enviar."
         />
       </div>
 
-      <div className="flex-1 min-h-0 rounded-2xl border border-slate-200/80 bg-white/90 backdrop-blur-sm p-3 lg:p-5 shadow-sm calendar-wrapper mx-2 lg:mx-4 mb-2">
+      <div className="flex-1 min-h-[280px] rounded-xl sm:rounded-2xl border border-[#2a2d3e] bg-[#13151f] p-2 sm:p-3 lg:p-5 shadow-sm shadow-black/20 calendar-wrapper mx-1 sm:mx-2 lg:mx-4 mb-1">
         <BigCalendar
           localizer={localizer}
           events={events}
@@ -131,8 +131,8 @@ export function CalendarioPage() {
           components={{ toolbar: CalendarToolbar, event: EventComponent }}
           eventPropGetter={() => ({
             style: {
-              backgroundColor: "#334155",
-              borderColor: "#1e293b",
+              backgroundColor: "#4f46e5",
+              borderColor: "#6366f1",
               color: "white",
               borderRadius: "6px",
               border: "none",
@@ -159,24 +159,24 @@ export function CalendarioPage() {
                   </span>
                 </div>
 
-                <p className="text-sm font-semibold text-slate-500 uppercase tracking-wide">
+                <p className="text-sm font-semibold text-indigo-400 uppercase tracking-wide">
                   {selectedOs.empresa_contratada}
                 </p>
 
-                <div className="grid gap-3 text-base text-slate-700 bg-slate-50 rounded-xl p-4 border border-slate-100">
+                <div className="grid gap-3 text-base text-slate-300 bg-[#0f1117] rounded-xl p-4 border border-[#2a2d3e]">
                   <p>
-                    <span className="font-semibold text-slate-900">Endereço:</span> {selectedOs.endereco}
+                    <span className="font-semibold text-slate-100">Endereço:</span> {selectedOs.endereco}
                   </p>
                   <p>
-                    <span className="font-semibold text-slate-900">Período:</span>{" "}
+                    <span className="font-semibold text-slate-100">Período:</span>{" "}
                     {formatDate(selectedOs.data_inicio_evento)} até{" "}
                     {formatDate(selectedOs.data_fim_evento)}
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
-                    <span className="inline-block w-1 h-5 bg-slate-800 rounded-full" />
+                  <h3 className="text-lg font-bold text-slate-100 mb-3 flex items-center gap-2">
+                    <span className="inline-block w-1 h-5 bg-indigo-500 rounded-full" />
                     Itens para Enviar
                   </h3>
                   {selectedOs.itens_os && selectedOs.itens_os.length > 0 ? (
@@ -184,12 +184,12 @@ export function CalendarioPage() {
                       {selectedOs.itens_os.map((item) => (
                         <div
                           key={item.id ?? item.nome_item}
-                          className="flex items-center justify-between p-4 rounded-xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
+                          className="flex items-center justify-between p-4 rounded-xl bg-[#0f1117] border border-[#2a2d3e] hover:border-indigo-500/30 transition-colors"
                         >
-                          <span className="text-base font-semibold text-slate-900">
+                          <span className="text-base font-semibold text-slate-100">
                             {item.nome_item}
                           </span>
-                          <span className="text-xl font-bold text-slate-800 bg-slate-100 px-4 py-1.5 rounded-lg min-w-[3.5rem] text-center">
+                          <span className="text-xl font-bold text-indigo-300 bg-indigo-950/50 px-4 py-1.5 rounded-lg min-w-[3.5rem] text-center border border-indigo-800/40">
                             {item.quantidade}x
                           </span>
                         </div>
