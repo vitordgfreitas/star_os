@@ -7,12 +7,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ItensOsList } from "@/components/os/ItensOsList";
 import { OsDetalheDialog } from "@/components/os/OsDetalheDialog";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { SubNav } from "@/components/layout/SubNav";
 import { listarOrdensServico } from "@/lib/supabase/ordens-servico";
 import type { OrdemServico, StatusItem } from "@/types";
-import { formatDate, toDateInputValue } from "@/lib/utils";
+import { formatCurrency, formatDate, toDateInputValue } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
 type TipoDia = "inicio" | "fim" | "inicio_fim";
@@ -136,7 +137,7 @@ export function ListaServicosPage() {
       />
       <SubNav />
 
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 no-print">
         <Button
           variant="outline"
           size="lg"
@@ -187,33 +188,78 @@ export function ListaServicosPage() {
                   <p className="text-slate-500 text-base py-4 text-center">Nenhum serviço neste dia.</p>
                 ) : (
                   servicos.map(({ os, tipos }) => (
-                    <button
+                    <div
                       key={os.id}
-                      type="button"
-                      onClick={() => setSelectedOs(os)}
-                      className="w-full text-left p-4 rounded-xl bg-[#0f1117] border border-[#2a2d3e] space-y-2 hover:border-indigo-500/40 hover:bg-[#13151f] transition-colors min-h-[4.5rem] active:scale-[0.99]"
+                      className="rounded-xl border border-[#2a2d3e] bg-[#0f1117] print:bg-white print:border-gray-300 print:break-inside-avoid"
                     >
-                      <div className="flex flex-wrap gap-2">
-                        {(tipos.includes("inicio") || tipos.includes("inicio_fim")) && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-lg text-sm font-bold bg-emerald-950/60 text-emerald-300 border border-emerald-700/50">
-                            INÍCIO
-                          </span>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedOs(os)}
+                        className="w-full text-left p-4 space-y-2 hover:border-indigo-500/40 hover:bg-[#13151f] transition-colors min-h-[4.5rem] active:scale-[0.99] print:hidden"
+                      >
+                        <div className="flex flex-wrap gap-2">
+                          {(tipos.includes("inicio") || tipos.includes("inicio_fim")) && (
+                            <span className="inline-flex items-center px-3 py-1 rounded-lg text-sm font-bold bg-emerald-950/60 text-emerald-300 border border-emerald-700/50">
+                              INÍCIO
+                            </span>
+                          )}
+                          {(tipos.includes("fim") || tipos.includes("inicio_fim")) && (
+                            <span className="inline-flex items-center px-3 py-1 rounded-lg text-sm font-bold bg-red-950/60 text-red-300 border border-red-700/50">
+                              ENCERRA
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-lg font-bold text-slate-100">
+                          {os.contratos?.numero_controle || os.nome_contrato}
+                        </p>
+                        <p className="text-sm text-slate-400">{os.orgao_publico}</p>
+                        <p className="text-sm text-slate-500">
+                          {os.cidade}/{os.estado} — {os.endereco}
+                        </p>
+                        <p className="text-sm text-indigo-400">{os.empresa_contratada}</p>
+                      </button>
+
+                      <div className="hidden print:block p-4 space-y-4">
+                        <div className="flex flex-wrap gap-2">
+                          {(tipos.includes("inicio") || tipos.includes("inicio_fim")) && (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded border border-gray-400 text-xs font-bold">
+                              INÍCIO
+                            </span>
+                          )}
+                          {(tipos.includes("fim") || tipos.includes("inicio_fim")) && (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded border border-gray-400 text-xs font-bold">
+                              ENCERRA
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-lg font-bold">
+                            {os.contratos?.numero_controle || os.nome_contrato}
+                          </p>
+                          <p className="text-sm">{os.orgao_publico}</p>
+                          <p className="text-sm">
+                            {os.cidade}/{os.estado} — {os.endereco}
+                          </p>
+                          <p className="text-sm font-medium">{os.empresa_contratada}</p>
+                          <p className="text-sm mt-1">
+                            {formatDate(os.data_inicio_evento)} até {formatDate(os.data_fim_evento)} —{" "}
+                            {formatCurrency(os.valor_total)}
+                          </p>
+                        </div>
+
+                        {os.observacoes && (
+                          <div className="border border-gray-300 rounded p-3">
+                            <p className="text-sm font-semibold mb-1">Observações</p>
+                            <p className="text-sm whitespace-pre-wrap">{os.observacoes}</p>
+                          </div>
                         )}
-                        {(tipos.includes("fim") || tipos.includes("inicio_fim")) && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-lg text-sm font-bold bg-red-950/60 text-red-300 border border-red-700/50">
-                            ENCERRA
-                          </span>
-                        )}
+
+                        <div>
+                          <p className="text-sm font-semibold mb-2">Itens — Status Logístico</p>
+                          <ItensOsList itens={os.itens_os ?? []} compact />
+                        </div>
                       </div>
-                      <p className="text-lg font-bold text-slate-100">
-                        {os.contratos?.numero_controle || os.nome_contrato}
-                      </p>
-                      <p className="text-sm text-slate-400">{os.orgao_publico}</p>
-                      <p className="text-sm text-slate-500">
-                        {os.cidade}/{os.estado} — {os.endereco}
-                      </p>
-                      <p className="text-sm text-indigo-400">{os.empresa_contratada}</p>
-                    </button>
+                    </div>
                   ))
                 )}
               </CardContent>

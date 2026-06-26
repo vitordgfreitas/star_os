@@ -31,6 +31,7 @@ export interface Contrato {
   data_fim: string;
   numero_controle: string;
   link_pdf_drive: string | null;
+  observacoes: string | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -41,6 +42,7 @@ export interface ContratoInput {
   data_fim: string;
   numero_controle: string;
   link_pdf_drive?: string | null;
+  observacoes?: string | null;
 }
 
 export interface ItemOS {
@@ -67,6 +69,8 @@ export interface OrdemServico {
   status: StatusOS;
   nota_emitida: boolean;
   link_drive_nota: string | null;
+  link_drive_os: string | null;
+  observacoes: string | null;
   pagamento_recebido: boolean;
   created_at?: string;
   updated_at?: string;
@@ -89,6 +93,8 @@ export interface OrdemServicoInput {
   status: StatusOS;
   nota_emitida?: boolean;
   link_drive_nota?: string | null;
+  link_drive_os?: string | null;
+  observacoes?: string | null;
   pagamento_recebido?: boolean;
   itens: Omit<ItemOS, "id" | "os_id">[];
 }

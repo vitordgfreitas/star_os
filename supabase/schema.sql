@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS public.contratos (
   data_fim         DATE NOT NULL,
   numero_controle  TEXT NOT NULL,
   link_pdf_drive   TEXT,
+  observacoes      TEXT,
   created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   CONSTRAINT contratos_datas_validas CHECK (data_fim >= data_inicio)
@@ -59,6 +60,8 @@ CREATE TABLE IF NOT EXISTS public.ordens_servico (
   status              status_os NOT NULL DEFAULT 'Pendente',
   nota_emitida        BOOLEAN NOT NULL DEFAULT FALSE,
   link_drive_nota     TEXT,
+  link_drive_os       TEXT,
+  observacoes         TEXT,
   pagamento_recebido  BOOLEAN NOT NULL DEFAULT FALSE,
   created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),

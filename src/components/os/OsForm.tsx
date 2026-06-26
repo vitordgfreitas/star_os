@@ -5,6 +5,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DatePicker } from "@/components/ui/date-picker";
 import {
@@ -96,6 +97,8 @@ export function OsForm({
   const [status, setStatus] = useState<StatusOS>(initialData?.status ?? "Pendente");
   const [notaEmitida, setNotaEmitida] = useState(initialData?.nota_emitida ?? false);
   const [linkDriveNota, setLinkDriveNota] = useState(initialData?.link_drive_nota ?? "");
+  const [linkDriveOs, setLinkDriveOs] = useState(initialData?.link_drive_os ?? "");
+  const [observacoes, setObservacoes] = useState(initialData?.observacoes ?? "");
   const [pagamentoRecebido, setPagamentoRecebido] = useState(
     initialData?.pagamento_recebido ?? false
   );
@@ -182,6 +185,8 @@ export function OsForm({
       status,
       nota_emitida: notaEmitida,
       link_drive_nota: linkDriveNota.trim() || null,
+      link_drive_os: linkDriveOs.trim() || null,
+      observacoes: observacoes.trim() || null,
       pagamento_recebido: pagamentoRecebido,
       itens: itens
         .filter((i) => i.nome_item.trim())
@@ -328,6 +333,25 @@ export function OsForm({
               value={endereco}
               onChange={(e) => setEndereco(e.target.value)}
               placeholder="Rua, número, bairro..."
+            />
+          </div>
+          <div className="md:col-span-2">
+            <Label htmlFor="link-os">Link da Ordem de Serviço no Drive (opcional)</Label>
+            <Input
+              id="link-os"
+              value={linkDriveOs}
+              onChange={(e) => setLinkDriveOs(e.target.value)}
+              placeholder="https://drive.google.com/..."
+            />
+          </div>
+          <div className="md:col-span-2">
+            <Label htmlFor="observacoes">Observações (opcional)</Label>
+            <Textarea
+              id="observacoes"
+              value={observacoes}
+              onChange={(e) => setObservacoes(e.target.value)}
+              placeholder="Anotações sobre esta ordem de serviço..."
+              rows={3}
             />
           </div>
         </CardContent>

@@ -100,23 +100,6 @@ export function OrdensListPage() {
     }
   }
 
-  async function handleLinkChange(os: OrdemServico, link: string) {
-    try {
-      await atualizarCamposFinanceiros(os.id, {
-        link_drive_nota: link.trim() || null,
-      });
-      setOrdens((prev) =>
-        prev.map((o) =>
-          o.id === os.id ? { ...o, link_drive_nota: link.trim() || null } : o
-        )
-      );
-    } catch (err) {
-      toast.error("Erro ao salvar link", {
-        description: err instanceof Error ? err.message : "Tente novamente.",
-      });
-    }
-  }
-
   async function handleEditSubmit(data: OrdemServicoInput) {
     if (!editOs) return;
     setSaving(true);
@@ -202,7 +185,6 @@ export function OrdensListPage() {
               onEdit={setEditOs}
               onDelete={setDeleteConfirm}
               onToggleFinanceiro={handleToggleFinanceiro}
-              onLinkChange={handleLinkChange}
               onItemStatusChange={handleItemStatusChange}
             />
           ))}

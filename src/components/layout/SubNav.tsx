@@ -13,7 +13,7 @@ export function SubNav() {
 
   return (
     <nav
-      className="flex flex-wrap gap-2"
+      className="no-print flex flex-wrap gap-2"
       aria-label={`Sub-navegação: ${section.label}`}
     >
       {section.items.map((item) => {

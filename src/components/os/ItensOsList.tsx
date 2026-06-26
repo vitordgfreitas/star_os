@@ -42,21 +42,24 @@ export function ItensOsList({ itens, onStatusChange, compact }: ItensOsListProps
           key={item.id ?? item.nome_item}
           className={
             compact
-              ? "flex flex-col gap-3 p-3 rounded-lg bg-[#0f1117] border border-[#2a2d3e] sm:flex-row sm:items-center sm:justify-between"
-              : "flex flex-col gap-3 p-4 rounded-xl bg-[#0f1117] border border-[#2a2d3e] sm:flex-row sm:items-center sm:justify-between"
+              ? "flex flex-col gap-3 p-3 rounded-lg bg-[#0f1117] border border-[#2a2d3e] sm:flex-row sm:items-center sm:justify-between print:bg-white print:border-gray-300"
+              : "flex flex-col gap-3 p-4 rounded-xl bg-[#0f1117] border border-[#2a2d3e] sm:flex-row sm:items-center sm:justify-between print:bg-white print:border-gray-300"
           }
         >
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-slate-100 truncate">{item.nome_item}</p>
-            <p className="text-sm text-slate-500 mt-0.5">Quantidade: {item.quantidade}x</p>
+            <p className="font-semibold text-slate-100 truncate print:text-black">{item.nome_item}</p>
+            <p className="text-sm text-slate-500 mt-0.5 print:text-gray-600">Quantidade: {item.quantidade}x</p>
           </div>
-          <div className="w-full sm:w-auto sm:shrink-0">
+          <div className="w-full sm:w-auto sm:shrink-0 print:hidden">
             <ItemStatusSelect
               value={item.status_item ?? "Pendente"}
               onChange={(s) => handleStatusChange(item, s)}
               disabled={savingId === item.id}
             />
           </div>
+          <span className="hidden print:inline text-sm text-black font-medium">
+            {item.status_item ?? "Pendente"}
+          </span>
         </div>
       ))}
     </div>

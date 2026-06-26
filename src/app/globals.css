@@ -242,3 +242,84 @@ body {
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
+
+/* ============================================================
+   Impressão — documento sóbrio em preto e branco
+   ============================================================ */
+@media print {
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: economy;
+    print-color-adjust: economy;
+  }
+
+  .no-print,
+  [data-sonner-toaster],
+  [role="dialog"],
+  [data-radix-popper-content-wrapper] {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  h1, h2, h3, h4, p, span, strong, td, th, li {
+    color: #000 !important;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: none !important;
+  }
+
+  /* Calendário */
+  .calendar-wrapper {
+    border: 1px solid #ccc !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+
+  .calendar-wrapper .rbc-month-view,
+  .calendar-wrapper .rbc-day-bg,
+  .calendar-wrapper .rbc-header {
+    background: #fff !important;
+    border-color: #ccc !important;
+    color: #000 !important;
+  }
+
+  .calendar-wrapper .rbc-off-range-bg {
+    background: #f5f5f5 !important;
+  }
+
+  .calendar-wrapper .rbc-today {
+    background: #eee !important;
+  }
+
+  .calendar-wrapper .rbc-event {
+    background: #333 !important;
+    color: #fff !important;
+    border: none !important;
+  }
+
+  .calendar-wrapper .rbc-show-more {
+    color: #000 !important;
+  }
+
+  .calendar-wrapper .rbc-toolbar button {
+    display: none !important;
+  }
+
+  .calendar-wrapper .rbc-toolbar-label {
+    color: #000 !important;
+    font-weight: 700;
+  }
+}

@@ -9,7 +9,7 @@ import {
 import { StatusBadge } from "@/components/ui/badge";
 import { ItensOsList } from "@/components/os/ItensOsList";
 import type { OrdemServico, StatusItem } from "@/types";
-import { formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface OsDetalheDialogProps {
   os: OrdemServico | null;
@@ -50,7 +50,18 @@ export function OsDetalheDialog({ os, onClose, onItemStatusChange }: OsDetalheDi
                   <span className="font-semibold text-slate-100">Período:</span>{" "}
                   {formatDate(os.data_inicio_evento)} até {formatDate(os.data_fim_evento)}
                 </p>
+                <p>
+                  <span className="font-semibold text-slate-100">Valor:</span>{" "}
+                  {formatCurrency(os.valor_total)}
+                </p>
               </div>
+
+              {os.observacoes && (
+                <div className="rounded-xl bg-[#0f1117] border border-[#2a2d3e] p-4">
+                  <p className="text-sm font-semibold text-slate-200 mb-1">Observações</p>
+                  <p className="text-sm text-slate-400 whitespace-pre-wrap">{os.observacoes}</p>
+                </div>
+              )}
 
               <div>
                 <h3 className="text-lg font-bold text-slate-100 mb-3 flex items-center gap-2">

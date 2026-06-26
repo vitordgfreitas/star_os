@@ -13,14 +13,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isLogin = pathname === "/login";
 
   return (
-    <div className="flex min-h-dvh flex-col lg:flex-row bg-[#0a0b10]">
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div className="flex min-h-dvh flex-col lg:flex-row bg-[#0a0b10] print:bg-white">
+      <div className="no-print fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-indigo-950/30 blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-slate-900/50 blur-3xl" />
       </div>
 
       {/* Sidebar — só desktop */}
-      <div className="hidden lg:flex lg:flex-shrink-0">
+      <div className="no-print hidden lg:flex lg:flex-shrink-0">
         <Sidebar />
       </div>
 
@@ -29,9 +29,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <main
           className={cn(
-            "flex-1 overflow-auto min-h-0",
+            "flex-1 overflow-auto min-h-0 print:overflow-visible",
             isLogin ? "p-4 sm:p-6 lg:p-10" : isCalendar ? "p-3 sm:p-4 lg:p-6" : "p-4 sm:p-6 lg:p-10",
-            !isLogin && "pb-24 lg:pb-0"
+            !isLogin && "pb-24 lg:pb-0 print:pb-0"
           )}
         >
           <div className={cn("mx-auto w-full", isCalendar || isLogin ? "max-w-none" : "max-w-6xl")}>

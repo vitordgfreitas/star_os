@@ -44,7 +44,7 @@ export function OsFilters({ filtros, onChange, totalFiltrado, totalGeral }: OsFi
     filtros.ordenacao !== "data";
 
   return (
-    <Card>
+    <Card className="no-print">
       <CardContent className="p-4 sm:p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <p className="text-sm text-slate-400">

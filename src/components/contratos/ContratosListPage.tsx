@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ExternalLink, Pencil, Trash2 } from "lucide-react";
+import { FileText, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LinkIconButton } from "@/components/ui/link-icon-button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
@@ -111,26 +112,34 @@ export function ContratosListPage() {
             <Card key={c.id}>
               <CardContent className="p-5 sm:p-6 space-y-4">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-100">{c.numero_controle}</h2>
-                  <p className="text-base text-slate-400 mt-1">{c.orgao}</p>
-                  <p className="text-sm text-slate-500 mt-2">
+                  <h2 className="text-xl font-bold text-slate-100 print:text-black">{c.numero_controle}</h2>
+                  <p className="text-base text-slate-400 mt-1 print:text-gray-700">{c.orgao}</p>
+                  <p className="text-sm text-slate-500 mt-2 print:text-gray-600">
                     {formatDate(c.data_inicio)} até {formatDate(c.data_fim)}
                   </p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  {c.link_pdf_drive && (
-                    <Button variant="outline" size="lg" asChild className="min-h-12">
-                      <a href={c.link_pdf_drive} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-5 w-5" />
-                        Ver PDF
-                      </a>
-                    </Button>
+                  {c.observacoes && (
+                    <p className="text-sm text-slate-400 mt-3 print:text-gray-700 whitespace-pre-wrap">
+                      <strong className="text-slate-300 print:text-black">Observações:</strong>{" "}
+                      {c.observacoes}
+                    </p>
                   )}
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                  {c.link_pdf_drive && (
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-slate-500 shrink-0" />
+                      <LinkIconButton
+                        href={c.link_pdf_drive}
+                        label="Abrir PDF do contrato"
+                      />
+                    </div>
+                  )}
+                  <div className="flex flex-col sm:flex-row gap-2 sm:ml-auto">
                   <Button
                     variant="outline"
                     size="lg"
                     onClick={() => setEditContrato(c)}
-                    className="min-h-12"
+                    className="min-h-12 no-print"
                   >
                     <Pencil className="h-5 w-5" />
                     Editar
@@ -139,11 +148,12 @@ export function ContratosListPage() {
                     variant="destructive"
                     size="lg"
                     onClick={() => setDeleteConfirm(c)}
-                    className="min-h-12"
+                    className="min-h-12 no-print"
                   >
                     <Trash2 className="h-5 w-5" />
                     Excluir
                   </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

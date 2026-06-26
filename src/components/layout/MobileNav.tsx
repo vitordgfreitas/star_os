@@ -13,7 +13,7 @@ export function MobileNav() {
 
   return (
     <nav
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#080910]/95 backdrop-blur-md border-t border-[#1e2130] safe-area-bottom"
+      className="no-print lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#080910]/95 backdrop-blur-md border-t border-[#1e2130] safe-area-bottom"
       aria-label="Navegação principal"
     >
       <div className="flex items-stretch justify-around px-1 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">

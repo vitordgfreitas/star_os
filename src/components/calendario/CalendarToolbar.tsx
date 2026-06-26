@@ -34,7 +34,7 @@ export function CalendarToolbar({ date, onNavigate }: ToolbarProps<CalendarEvent
   }
 
   return (
-    <div className="flex items-center justify-between gap-2 sm:gap-4 mb-3 sm:mb-4 px-0.5 sm:px-1">
+    <div className="no-print flex items-center justify-between gap-2 sm:gap-4 mb-3 sm:mb-4 px-0.5 sm:px-1">
       <Button
         type="button"
         variant="outline"

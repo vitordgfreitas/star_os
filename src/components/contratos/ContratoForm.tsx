@@ -5,6 +5,7 @@ import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DatePicker } from "@/components/ui/date-picker";
 import type { Contrato, ContratoInput } from "@/types";
@@ -39,6 +40,7 @@ export function ContratoForm({
     initialData ? parseDate(initialData.data_fim) : undefined
   );
   const [linkPdf, setLinkPdf] = useState(initialData?.link_pdf_drive ?? "");
+  const [observacoes, setObservacoes] = useState(initialData?.observacoes ?? "");
   const [errors, setErrors] = useState<string[]>([]);
 
   function validate(): boolean {
@@ -64,6 +66,7 @@ export function ContratoForm({
       data_inicio: toDateInputValue(dataInicio!),
       data_fim: toDateInputValue(dataFim!),
       link_pdf_drive: linkPdf.trim() || null,
+      observacoes: observacoes.trim() || null,
     });
   }
 
@@ -106,10 +109,10 @@ export function ContratoForm({
             />
           </div>
           <div className="md:col-span-2">
-            <Label htmlFor="link">Link do PDF no Drive (opcional)</Label>
+            <Label htmlFor="link-pdf">Link do PDF no Drive (opcional)</Label>
             <div className="flex gap-3 mt-1">
               <Input
-                id="link"
+                id="link-pdf"
                 value={linkPdf}
                 onChange={(e) => setLinkPdf(e.target.value)}
                 placeholder="https://drive.google.com/..."
@@ -117,12 +120,22 @@ export function ContratoForm({
               />
               {linkPdf && (
                 <Button variant="outline" size="icon" asChild className="min-h-12 min-w-12">
-                  <a href={linkPdf} target="_blank" rel="noopener noreferrer">
+                  <a href={linkPdf} target="_blank" rel="noopener noreferrer" aria-label="Abrir PDF">
                     <ExternalLink className="h-5 w-5" />
                   </a>
                 </Button>
               )}
             </div>
+          </div>
+          <div className="md:col-span-2">
+            <Label htmlFor="observacoes">Observações (opcional)</Label>
+            <Textarea
+              id="observacoes"
+              value={observacoes}
+              onChange={(e) => setObservacoes(e.target.value)}
+              placeholder="Anotações sobre o contrato..."
+              rows={3}
+            />
           </div>
         </CardContent>
       </Card>
