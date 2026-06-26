@@ -44,7 +44,7 @@ export function Sidebar() {
   return (
     <aside className="w-64 bg-[#080910] text-white flex-shrink-0 flex flex-col border-r border-[#1e2130] h-dvh sticky top-0">
       <div className="px-6 py-7 border-b border-[#1e2130]">
-        <h1 className="text-xl font-bold tracking-tight text-white">Star OS</h1>
+        <h1 className="text-xl font-bold tracking-tight text-white">Gerenciador</h1>
         <p className="text-slate-500 text-[11px] mt-1.5 font-medium uppercase tracking-[0.15em]">
           Gestão de Contratos
         </p>

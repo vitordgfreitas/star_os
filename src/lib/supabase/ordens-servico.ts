@@ -1,12 +1,11 @@
 import { supabase } from "./client";
-import type { OrdemServico, OrdemServicoInput, ItemOS } from "@/types";
+import type { OrdemServico, OrdemServicoInput, ItemOS, StatusItem } from "@/types";
 
 /** Busca todas as ordens de serviço com seus itens */
 export async function listarOrdensServico(): Promise<OrdemServico[]> {
   const { data, error } = await supabase
     .from("ordens_servico")
-    .select("*, itens_os(*)")
-    .order("data_inicio_evento", { ascending: false });
+    .select("*, itens_os(*)");
 
   if (error) throw new Error(error.message);
   return (data ?? []) as OrdemServico[];
@@ -27,6 +26,22 @@ export async function buscarOrdemServico(id: string): Promise<OrdemServico | nul
   return data as OrdemServico;
 }
 
+/** Atualiza o status de um item individualmente */
+export async function atualizarStatusItem(
+  itemId: string,
+  status_item: StatusItem
+): Promise<ItemOS> {
+  const { data, error } = await supabase
+    .from("itens_os")
+    .update({ status_item })
+    .eq("id", itemId)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data as ItemOS;
+}
+
 /** Cria uma nova ordem de serviço com itens */
 export async function criarOrdemServico(input: OrdemServicoInput): Promise<OrdemServico> {
   const { itens, ...osData } = input;
@@ -44,11 +59,10 @@ export async function criarOrdemServico(input: OrdemServicoInput): Promise<Ordem
       os_id: os.id,
       nome_item: item.nome_item,
       quantidade: item.quantidade,
+      status_item: item.status_item ?? "Pendente",
     }));
 
-    const { error: itensError } = await supabase
-      .from("itens_os")
-      .insert(itensComOsId);
+    const { error: itensError } = await supabase.from("itens_os").insert(itensComOsId);
 
     if (itensError) throw new Error(itensError.message);
   }
@@ -87,11 +101,10 @@ export async function atualizarOrdemServico(
         os_id: id,
         nome_item: item.nome_item,
         quantidade: item.quantidade,
+        status_item: item.status_item ?? "Pendente",
       }));
 
-      const { error: itensError } = await supabase
-        .from("itens_os")
-        .insert(itensComOsId);
+      const { error: itensError } = await supabase.from("itens_os").insert(itensComOsId);
 
       if (itensError) throw new Error(itensError.message);
     }
@@ -111,10 +124,7 @@ export async function atualizarCamposFinanceiros(
     link_drive_nota?: string | null;
   }
 ): Promise<void> {
-  const { error } = await supabase
-    .from("ordens_servico")
-    .update(campos)
-    .eq("id", id);
+  const { error } = await supabase.from("ordens_servico").update(campos).eq("id", id);
 
   if (error) throw new Error(error.message);
 }

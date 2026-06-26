@@ -18,9 +18,10 @@ import {
 } from "@/components/ui/dialog";
 import { StatusBadge } from "@/components/ui/badge";
 import { CalendarToolbar } from "@/components/calendario/CalendarToolbar";
+import { ItensOsList } from "@/components/os/ItensOsList";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { listarOrdensServico } from "@/lib/supabase/ordens-servico";
-import type { CalendarEvent, OrdemServico } from "@/types";
+import type { CalendarEvent, OrdemServico, StatusItem } from "@/types";
 import { formatDate } from "@/lib/utils";
 
 const locales = { "pt-BR": ptBR };
@@ -50,8 +51,10 @@ const messages = {
 function EventComponent({ event }: EventProps<CalendarEvent>) {
   return (
     <div className="text-[10px] sm:text-xs font-medium leading-tight px-0.5 sm:px-1">
-      <div className="truncate">{event.resource.orgao_publico}</div>
-      <div className="text-[9px] sm:text-xs opacity-80 truncate hidden sm:block">{event.resource.cidade}</div>
+      <div className="truncate">{event.resource.nome_contrato || event.resource.orgao_publico}</div>
+      <div className="text-[9px] sm:text-xs opacity-80 truncate hidden sm:block">
+        {event.resource.cidade}
+      </div>
     </div>
   );
 }
@@ -61,7 +64,7 @@ function osToCalendarEvent(os: OrdemServico): CalendarEvent {
   const end = addDays(new Date(os.data_fim_evento + "T00:00:00"), 1);
   return {
     id: os.id,
-    title: `${os.orgao_publico} — ${os.cidade}`,
+    title: `${os.nome_contrato || os.orgao_publico} — ${os.cidade}`,
     start,
     end,
     resource: os,
@@ -94,6 +97,31 @@ export function CalendarioPage() {
 
   const events = useMemo(() => ordens.map(osToCalendarEvent), [ordens]);
 
+  function handleItemStatusChange(itemId: string, status: StatusItem) {
+    setOrdens((prev) =>
+      prev.map((o) =>
+        o.id === selectedOs?.id
+          ? {
+              ...o,
+              itens_os: o.itens_os?.map((i) =>
+                i.id === itemId ? { ...i, status_item: status } : i
+              ),
+            }
+          : o
+      )
+    );
+    setSelectedOs((prev) =>
+      prev
+        ? {
+            ...prev,
+            itens_os: prev.itens_os?.map((i) =>
+              i.id === itemId ? { ...i, status_item: status } : i
+            ),
+          }
+        : null
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -107,7 +135,7 @@ export function CalendarioPage() {
       <div className="mb-3 sm:mb-4 px-1 sm:px-2 lg:px-4 shrink-0">
         <PageHeader
           title="Calendário de Eventos"
-          description="Toque em um evento para ver os itens a enviar."
+          description="Toque em um evento para ver itens e atualizar status logístico."
         />
       </div>
 
@@ -148,13 +176,16 @@ export function CalendarioPage() {
           {selectedOs && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-2xl">{selectedOs.orgao_publico}</DialogTitle>
+                <DialogTitle className="text-xl sm:text-2xl">
+                  {selectedOs.nome_contrato}
+                </DialogTitle>
               </DialogHeader>
 
-              <div className="space-y-6">
+              <div className="space-y-5">
                 <div className="flex flex-wrap items-center gap-3">
                   <StatusBadge status={selectedOs.status} />
-                  <span className="text-lg text-slate-700">
+                  <span className="text-base text-slate-400">{selectedOs.orgao_publico}</span>
+                  <span className="text-base text-slate-400">
                     {selectedOs.cidade}/{selectedOs.estado}
                   </span>
                 </div>
@@ -163,9 +194,10 @@ export function CalendarioPage() {
                   {selectedOs.empresa_contratada}
                 </p>
 
-                <div className="grid gap-3 text-base text-slate-300 bg-[#0f1117] rounded-xl p-4 border border-[#2a2d3e]">
+                <div className="grid gap-3 text-sm sm:text-base text-slate-300 bg-[#0f1117] rounded-xl p-4 border border-[#2a2d3e]">
                   <p>
-                    <span className="font-semibold text-slate-100">Endereço:</span> {selectedOs.endereco}
+                    <span className="font-semibold text-slate-100">Endereço:</span>{" "}
+                    {selectedOs.endereco}
                   </p>
                   <p>
                     <span className="font-semibold text-slate-100">Período:</span>{" "}
@@ -177,27 +209,13 @@ export function CalendarioPage() {
                 <div>
                   <h3 className="text-lg font-bold text-slate-100 mb-3 flex items-center gap-2">
                     <span className="inline-block w-1 h-5 bg-indigo-500 rounded-full" />
-                    Itens para Enviar
+                    Itens — Status Logístico
                   </h3>
-                  {selectedOs.itens_os && selectedOs.itens_os.length > 0 ? (
-                    <div className="space-y-3">
-                      {selectedOs.itens_os.map((item) => (
-                        <div
-                          key={item.id ?? item.nome_item}
-                          className="flex items-center justify-between p-4 rounded-xl bg-[#0f1117] border border-[#2a2d3e] hover:border-indigo-500/30 transition-colors"
-                        >
-                          <span className="text-base font-semibold text-slate-100">
-                            {item.nome_item}
-                          </span>
-                          <span className="text-xl font-bold text-indigo-300 bg-indigo-950/50 px-4 py-1.5 rounded-lg min-w-[3.5rem] text-center border border-indigo-800/40">
-                            {item.quantidade}x
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-slate-600 text-lg">Nenhum item cadastrado.</p>
-                  )}
+                  <ItensOsList
+                    itens={selectedOs.itens_os ?? []}
+                    onStatusChange={handleItemStatusChange}
+                    compact
+                  />
                 </div>
               </div>
             </>

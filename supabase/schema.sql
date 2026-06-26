@@ -15,6 +15,20 @@ BEGIN
   END IF;
 END$$;
 
+-- Enum de status do item
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'status_item') THEN
+    CREATE TYPE status_item AS ENUM (
+      'Pendente',
+      'Separado',
+      'Entregue',
+      'Concluído',
+      'Recolhido'
+    );
+  END IF;
+END$$;
+
 -- ============================================================
 -- Tabela: ordens_servico
 -- ============================================================
@@ -24,6 +38,7 @@ CREATE TABLE IF NOT EXISTS public.ordens_servico (
   cidade              TEXT NOT NULL,
   estado              CHAR(2) NOT NULL,
   orgao_publico       TEXT NOT NULL,
+  nome_contrato       TEXT NOT NULL,
   empresa_contratada  TEXT NOT NULL,
   endereco            TEXT NOT NULL,
   valor_total         NUMERIC(12, 2) NOT NULL DEFAULT 0 CHECK (valor_total >= 0),
@@ -44,6 +59,7 @@ CREATE INDEX IF NOT EXISTS idx_ordens_servico_status ON public.ordens_servico (s
 CREATE INDEX IF NOT EXISTS idx_ordens_servico_data_inicio ON public.ordens_servico (data_inicio_evento);
 CREATE INDEX IF NOT EXISTS idx_ordens_servico_data_fim ON public.ordens_servico (data_fim_evento);
 CREATE INDEX IF NOT EXISTS idx_ordens_servico_orgao ON public.ordens_servico (orgao_publico);
+CREATE INDEX IF NOT EXISTS idx_ordens_servico_nome_contrato ON public.ordens_servico (nome_contrato);
 CREATE INDEX IF NOT EXISTS idx_ordens_servico_empresa ON public.ordens_servico (empresa_contratada);
 
 -- ============================================================
@@ -52,12 +68,14 @@ CREATE INDEX IF NOT EXISTS idx_ordens_servico_empresa ON public.ordens_servico (
 CREATE TABLE IF NOT EXISTS public.itens_os (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   os_id       UUID NOT NULL REFERENCES public.ordens_servico (id) ON DELETE CASCADE,
-  nome_item   TEXT NOT NULL,
-  quantidade  INTEGER NOT NULL DEFAULT 1 CHECK (quantidade > 0),
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  nome_item    TEXT NOT NULL,
+  quantidade   INTEGER NOT NULL DEFAULT 1 CHECK (quantidade > 0),
+  status_item  status_item NOT NULL DEFAULT 'Pendente',
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_itens_os_os_id ON public.itens_os (os_id);
+CREATE INDEX IF NOT EXISTS idx_itens_os_status ON public.itens_os (status_item);
 
 -- ============================================================
 -- Trigger: atualizar updated_at automaticamente

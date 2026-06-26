@@ -1,27 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import {
-  CheckCircle2,
-  ExternalLink,
-  Pencil,
-  Trash2,
-  XCircle,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
-import { StatusBadge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { OsForm } from "@/components/os/OsForm";
+import { OsFilters } from "@/components/os/OsFilters";
+import { OsCard } from "@/components/os/OsCard";
 import { PageHeader } from "@/components/layout/PageHeader";
 import {
   listarOrdensServico,
@@ -29,15 +20,21 @@ import {
   atualizarCamposFinanceiros,
   excluirOrdemServico,
 } from "@/lib/supabase/ordens-servico";
-import type { OrdemServico, OrdemServicoInput } from "@/types";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { filtrarEOrdenarOrdens, FILTROS_PADRAO } from "@/lib/ordens-filtros";
+import type { FiltrosOS, OrdemServico, OrdemServicoInput, StatusItem } from "@/types";
 
 export function OrdensListPage() {
   const [ordens, setOrdens] = useState<OrdemServico[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filtros, setFiltros] = useState<FiltrosOS>(() => ({ ...FILTROS_PADRAO }));
   const [editOs, setEditOs] = useState<OrdemServico | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<OrdemServico | null>(null);
+
+  const ordensFiltradas = useMemo(
+    () => filtrarEOrdenarOrdens(ordens, filtros),
+    [ordens, filtros.busca, filtros.dataInicio, filtros.dataFim, filtros.ordenacao]
+  );
 
   const carregar = useCallback(async () => {
     setLoading(true);
@@ -56,6 +53,33 @@ export function OrdensListPage() {
   useEffect(() => {
     carregar();
   }, [carregar]);
+
+  function handleItemStatusChange(osId: string, itemId: string, status: StatusItem) {
+    setOrdens((prev) =>
+      prev.map((o) =>
+        o.id === osId
+          ? {
+              ...o,
+              itens_os: o.itens_os?.map((i) =>
+                i.id === itemId ? { ...i, status_item: status } : i
+              ),
+            }
+          : o
+      )
+    );
+    if (editOs?.id === osId) {
+      setEditOs((prev) =>
+        prev
+          ? {
+              ...prev,
+              itens_os: prev.itens_os?.map((i) =>
+                i.id === itemId ? { ...i, status_item: status } : i
+              ),
+            }
+          : null
+      );
+    }
+  }
 
   async function handleToggleFinanceiro(
     os: OrdemServico,
@@ -135,136 +159,50 @@ export function OrdensListPage() {
     <div className="space-y-6">
       <PageHeader
         title="Ordens de Serviço"
-        description={`${ordens.length} ordem${ordens.length !== 1 ? "ns" : ""} cadastrada${ordens.length !== 1 ? "s" : ""}`}
+        description="Gerencie contratos, itens e status logístico."
+      />
+
+      <OsFilters
+        filtros={filtros}
+        onChange={setFiltros}
+        totalFiltrado={ordensFiltradas.length}
+        totalGeral={ordens.length}
       />
 
       {ordens.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="py-16 text-center">
-            <p className="text-lg text-slate-400">
-              Nenhuma ordem de serviço cadastrada ainda.
-            </p>
+            <p className="text-lg text-slate-400">Nenhuma ordem de serviço cadastrada ainda.</p>
             <p className="text-slate-500 mt-2 text-sm">
               Use o menu &quot;Cadastrar OS&quot; para adicionar a primeira.
             </p>
           </CardContent>
         </Card>
+      ) : ordensFiltradas.length === 0 ? (
+        <Card className="border-dashed">
+          <CardContent className="py-12 text-center">
+            <p className="text-lg text-slate-400">Nenhum resultado para os filtros aplicados.</p>
+            <button
+              type="button"
+              onClick={() => setFiltros({ ...FILTROS_PADRAO })}
+              className="mt-3 text-indigo-400 hover:text-indigo-300 font-medium text-sm"
+            >
+              Limpar filtros
+            </button>
+          </CardContent>
+        </Card>
       ) : (
         <div className="space-y-4">
-          {ordens.map((os) => (
-            <Card key={os.id} className="overflow-hidden hover:border-indigo-500/20 transition-colors duration-200">
-              <CardContent className="p-6 space-y-4">
-                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                  <div className="space-y-2 flex-1">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <h2 className="text-xl font-bold text-slate-100">
-                        {os.orgao_publico}
-                      </h2>
-                      <StatusBadge status={os.status} />
-                    </div>
-                    <p className="text-sm font-medium text-indigo-400">
-                      {os.empresa_contratada}
-                    </p>
-                    <p className="text-base text-slate-400">
-                      {os.cidade}/{os.estado} — {os.endereco}
-                    </p>
-                    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-1 text-sm sm:text-base text-slate-500">
-                      <span>
-                        <strong>Evento:</strong> {formatDate(os.data_inicio_evento)} até{" "}
-                        {formatDate(os.data_fim_evento)}
-                      </span>
-                      <span>
-                        <strong>Valor:</strong> {formatCurrency(os.valor_total)}
-                      </span>
-                      <span>
-                        <strong>Itens:</strong> {os.itens_os?.length ?? 0}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full lg:w-auto">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setEditOs(os)}
-                      className="w-full sm:w-auto min-h-11"
-                    >
-                      <Pencil className="h-5 w-5" />
-                      Editar
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => setDeleteConfirm(os)}
-                      className="w-full sm:w-auto min-h-11"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                      Excluir
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2 pt-4 border-t border-[#2a2d3e]">
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-[#0f1117] border border-[#2a2d3e]">
-                    <div className="flex items-center gap-3">
-                      {os.nota_emitida ? (
-                        <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                      ) : (
-                        <XCircle className="h-5 w-5 text-slate-400" />
-                      )}
-                      <Label className="mb-0 text-base sm:text-lg">Nota Emitida?</Label>
-                    </div>
-                    <Switch
-                      checked={os.nota_emitida}
-                      onCheckedChange={(v) => handleToggleFinanceiro(os, "nota_emitida", v)}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-[#0f1117] border border-[#2a2d3e]">
-                    <div className="flex items-center gap-3">
-                      {os.pagamento_recebido ? (
-                        <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                      ) : (
-                        <XCircle className="h-5 w-5 text-slate-400" />
-                      )}
-                      <Label className="mb-0 text-base sm:text-lg">Pagamento Recebido?</Label>
-                    </div>
-                    <Switch
-                      checked={os.pagamento_recebido}
-                      onCheckedChange={(v) =>
-                        handleToggleFinanceiro(os, "pagamento_recebido", v)
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor={`link-${os.id}`}>Link do Google Drive (Nota Fiscal)</Label>
-                  <div className="flex gap-3 mt-1">
-                    <Input
-                      id={`link-${os.id}`}
-                      defaultValue={os.link_drive_nota ?? ""}
-                      placeholder="Cole o link do Drive aqui..."
-                      onBlur={(e) => {
-                        if (e.target.value !== (os.link_drive_nota ?? "")) {
-                          handleLinkChange(os, e.target.value);
-                        }
-                      }}
-                    />
-                    {os.link_drive_nota && (
-                      <Button variant="outline" size="icon" asChild>
-                        <a
-                          href={os.link_drive_nota}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="Abrir link do Drive"
-                        >
-                          <ExternalLink className="h-5 w-5" />
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          {ordensFiltradas.map((os) => (
+            <OsCard
+              key={os.id}
+              os={os}
+              onEdit={setEditOs}
+              onDelete={setDeleteConfirm}
+              onToggleFinanceiro={handleToggleFinanceiro}
+              onLinkChange={handleLinkChange}
+              onItemStatusChange={handleItemStatusChange}
+            />
           ))}
         </div>
       )}
@@ -292,10 +230,10 @@ export function OrdensListPage() {
             <DialogTitle>Confirmar Exclusão</DialogTitle>
           </DialogHeader>
           <p className="text-lg text-slate-300">
-            Tem certeza que deseja excluir a ordem de serviço de{" "}
-            <strong>{deleteConfirm?.orgao_publico}</strong>? Esta ação não pode ser desfeita.
+            Tem certeza que deseja excluir{" "}
+            <strong>{deleteConfirm?.nome_contrato}</strong>? Esta ação não pode ser desfeita.
           </p>
-          <div className="flex gap-4 mt-4">
+          <div className="flex flex-col sm:flex-row gap-3 mt-4">
             <Button variant="destructive" size="lg" onClick={handleDelete} className="flex-1">
               Sim, Excluir
             </Button>

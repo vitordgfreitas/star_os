@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { OrdemServico, OrdemServicoInput, StatusOS } from "@/types";
+import type { OrdemServico, OrdemServicoInput, StatusItem, StatusOS } from "@/types";
 import { toDateInputValue } from "@/lib/utils";
 
 const ESTADOS_BR = [
@@ -29,13 +29,14 @@ interface ItemRow {
   key: string;
   nome_item: string;
   quantidade: number;
+  status_item: StatusItem;
 }
 
 let itemKeyCounter = 0;
 
 function createEmptyItem(): ItemRow {
   itemKeyCounter += 1;
-  return { key: `item-${itemKeyCounter}`, nome_item: "", quantidade: 1 };
+  return { key: `item-${itemKeyCounter}`, nome_item: "", quantidade: 1, status_item: "Pendente" };
 }
 
 function itensFromOrdem(os?: OrdemServico): ItemRow[] {
@@ -44,9 +45,10 @@ function itensFromOrdem(os?: OrdemServico): ItemRow[] {
       key: i.id ?? `item-${i.nome_item}`,
       nome_item: i.nome_item,
       quantidade: i.quantidade,
+      status_item: i.status_item ?? "Pendente",
     }));
   }
-  return [{ key: "item-initial", nome_item: "", quantidade: 1 }];
+  return [{ key: "item-initial", nome_item: "", quantidade: 1, status_item: "Pendente" }];
 }
 
 function parseDate(value: string): Date | undefined {
@@ -75,6 +77,7 @@ export function OsForm({
   const [cidade, setCidade] = useState(initialData?.cidade ?? "");
   const [estado, setEstado] = useState(initialData?.estado ?? "");
   const [orgaoPublico, setOrgaoPublico] = useState(initialData?.orgao_publico ?? "");
+  const [nomeContrato, setNomeContrato] = useState(initialData?.nome_contrato ?? "");
   const [empresaContratada, setEmpresaContratada] = useState(initialData?.empresa_contratada ?? "");
   const [endereco, setEndereco] = useState(initialData?.endereco ?? "");
   const [valorTotal, setValorTotal] = useState(
@@ -121,6 +124,7 @@ export function OsForm({
     if (!cidade.trim()) newErrors.push("Informe a cidade.");
     if (!estado) newErrors.push("Selecione o estado.");
     if (!orgaoPublico.trim()) newErrors.push("Informe o órgão público.");
+    if (!nomeContrato.trim()) newErrors.push("Informe o nome do contrato.");
     if (!empresaContratada.trim()) newErrors.push("Informe a empresa contratada.");
     if (!endereco.trim()) newErrors.push("Informe o endereço.");
     if (!valorTotal || parseFloat(valorTotal) < 0) newErrors.push("Informe o valor total.");
@@ -146,6 +150,7 @@ export function OsForm({
       cidade: cidade.trim(),
       estado,
       orgao_publico: orgaoPublico.trim(),
+      nome_contrato: nomeContrato.trim(),
       empresa_contratada: empresaContratada.trim(),
       endereco: endereco.trim(),
       valor_total: parseFloat(valorTotal),
@@ -157,7 +162,11 @@ export function OsForm({
       pagamento_recebido: pagamentoRecebido,
       itens: itens
         .filter((i) => i.nome_item.trim())
-        .map((i) => ({ nome_item: i.nome_item.trim(), quantidade: i.quantidade })),
+        .map((i) => ({
+          nome_item: i.nome_item.trim(),
+          quantidade: i.quantidade,
+          status_item: i.status_item,
+        })),
     };
 
     await onSubmit(payload);
@@ -208,7 +217,16 @@ export function OsForm({
               id="orgao"
               value={orgaoPublico}
               onChange={(e) => setOrgaoPublico(e.target.value)}
-              placeholder="Ex: Prefeitura de São Paulo"
+              placeholder="Ex: Prefeitura de Juiz de Fora"
+            />
+          </div>
+          <div>
+            <Label htmlFor="nome_contrato">Nome do Contrato</Label>
+            <Input
+              id="nome_contrato"
+              value={nomeContrato}
+              onChange={(e) => setNomeContrato(e.target.value)}
+              placeholder="Ex: Festa Junina 2026 — Centro"
             />
           </div>
           <div>

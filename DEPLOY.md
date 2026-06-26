@@ -48,7 +48,9 @@ Este guia cobre a configuração completa: Supabase (banco de dados), senha de a
 
 **Projeto novo:** execute `supabase/schema.sql` completo.
 
-**Projeto já existente:** execute também `supabase/migrations/add_empresa_contratada.sql` para adicionar o campo *Empresa Contratada*.
+**Projeto já existente:** execute também as migrações em ordem:
+- `supabase/migrations/add_empresa_contratada.sql` — campo *Empresa Contratada*
+- `supabase/migrations/add_nome_contrato_and_status_item.sql` — *Nome do Contrato* na OS e *Status do Item* nos itens
 
 1. No painel do Supabase, vá em **SQL Editor**.
 2. Clique em **New query**.

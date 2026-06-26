@@ -22,7 +22,7 @@ export function MobileHeader() {
   return (
     <header className="lg:hidden sticky top-0 z-40 flex items-center justify-between px-4 py-3 bg-[#080910]/95 backdrop-blur-md border-b border-[#1e2130]">
       <div>
-        <h1 className="text-lg font-bold text-white leading-tight">Star OS</h1>
+        <h1 className="text-lg font-bold text-white leading-tight">Gerenciador</h1>
         <p className="text-[10px] text-slate-500 uppercase tracking-widest">Gestão de Contratos</p>
       </div>
       {showLogout && (

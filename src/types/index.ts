@@ -1,10 +1,35 @@
 export type StatusOS = "Pendente" | "Em Andamento" | "Concluído";
 
+export type StatusItem =
+  | "Pendente"
+  | "Separado"
+  | "Entregue"
+  | "Concluído"
+  | "Recolhido";
+
+export const STATUS_ITEM_OPTIONS: StatusItem[] = [
+  "Pendente",
+  "Separado",
+  "Entregue",
+  "Concluído",
+  "Recolhido",
+];
+
+export type OrdenacaoOS = "data" | "alfabetica";
+
+export interface FiltrosOS {
+  busca: string;
+  ordenacao: OrdenacaoOS;
+  dataInicio?: string;
+  dataFim?: string;
+}
+
 export interface ItemOS {
   id?: string;
   os_id?: string;
   nome_item: string;
   quantidade: number;
+  status_item?: StatusItem;
 }
 
 export interface OrdemServico {
@@ -13,6 +38,7 @@ export interface OrdemServico {
   cidade: string;
   estado: string;
   orgao_publico: string;
+  nome_contrato: string;
   empresa_contratada: string;
   endereco: string;
   valor_total: number;
@@ -32,6 +58,7 @@ export interface OrdemServicoInput {
   cidade: string;
   estado: string;
   orgao_publico: string;
+  nome_contrato: string;
   empresa_contratada: string;
   endereco: string;
   valor_total: number;
